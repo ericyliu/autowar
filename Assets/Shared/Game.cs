@@ -11,7 +11,6 @@ public class Game
     new Vector2(2f, 4f),
     new Vector2(2f, 20f)
   };
-  public GameComponent gameComponent;
   public Vector2 spawnTarget = new Vector2(15f, 13f);
   public Vector2 enemyTarget = new Vector2(187f, 12f);
   public List<GameStep> steps = new List<GameStep>();
@@ -21,7 +20,10 @@ public class Game
 
   public GameStep Step(GameStep step = null)
   {
-    if (step != null && step.id != this.step) throw new Exception();
+    if (step != null && step.id != this.step)
+    {
+      throw new Exception("Step count off\nawaiting:" + this.step + ", incoming: " + step.id);
+    }
     if (step == null)
     {
       step = new GameStep(this.step, this.actions);

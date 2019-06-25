@@ -8,13 +8,13 @@ using UnityEngine;
 
 public class Server
 {
-  static bool isRealServer = false;
-  PlayerHandler playerHandler;
+  static bool localhost = true;
+  List<PlayerHandler> playerHandlers = new List<PlayerHandler>();
   Game game;
 
   static void Main()
   {
-    Server.isRealServer = true;
+    // Server.localhost = false;
     (new Server()).Start();
   }
 
@@ -22,13 +22,13 @@ public class Server
   {
     this.game = new Game();
     Console.WriteLine("Starting the server");
-    new Thread(new ThreadStart(this.PublishSteps)).Start();
-    new Thread(new ThreadStart(this.ReceiveConnection)).Start();
+    new Thread(() => this.PublishSteps()).Start();
+    new Thread(() => this.ReceiveConnection()).Start();
   }
 
   void ReceiveConnection()
   {
-    IPHostEntry host = Dns.GetHostEntry(Server.isRealServer ? Dns.GetHostName() : "localhost");
+    IPHostEntry host = Dns.GetHostEntry(Server.localhost ? "localhost" : Dns.GetHostName());
     IPAddress ipAddress = host.AddressList[0];
     IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
     try
@@ -36,30 +36,29 @@ public class Server
       Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
       listener.Bind(localEndPoint);
       listener.Listen(10);
-      Debug.Log("Waiting for connection");
       Console.WriteLine("Waiting for a connection...");
-      this.playerHandler = new PlayerHandler(listener.Accept());
+      var playerHandler = new PlayerHandler(listener.Accept());
+      this.playerHandlers.Add(playerHandler);
       Console.WriteLine("Connection Received");
-      new Thread(new ThreadStart(this.ListenForActions)).Start();
+      new Thread(() => this.ListenForActions(playerHandler)).Start();
     }
     catch (Exception e)
     {
       Console.WriteLine(e);
-      if (this.playerHandler != null)
+      this.playerHandlers.ForEach(playerHandler =>
       {
-        this.playerHandler.handler.Shutdown(SocketShutdown.Both);
-        this.playerHandler.handler.Close();
-      }
+        playerHandler.handler.Shutdown(SocketShutdown.Both);
+        playerHandler.handler.Close();
+      });
     }
   }
 
-  void ListenForActions()
+  void ListenForActions(PlayerHandler playerHandler)
   {
-    while (true)
+    while (playerHandler != null)
     {
-      if (this.playerHandler == null) break;
       byte[] bytes = new byte[1];
-      this.playerHandler.handler.Receive(bytes);
+      playerHandler.handler.Receive(bytes);
       GameAction action = GameStep.ByteToGameAction(bytes[0]);
       this.game.actions.Add(action);
     }
@@ -70,22 +69,26 @@ public class Server
     while (true)
     {
       GameStep nextStep = this.game.Step();
-      if (this.playerHandler != null)
+      this.playerHandlers.ForEach(playerHandler =>
       {
-        if (this.playerHandler.isNew)
-        {
-          foreach (GameStep step in this.game.steps)
-          {
-            this.playerHandler.handler.Send(step.ToByteArray());
-          }
-          this.playerHandler.isNew = false;
-        }
-        else
-        {
-          this.playerHandler.handler.Send(nextStep.ToByteArray());
-        }
-      }
+        if (playerHandler != null) PublishToPlayer(playerHandler, nextStep);
+      });
       Thread.Sleep(60);
+    }
+  }
+
+  void PublishToPlayer(PlayerHandler playerHandler, GameStep nextStep)
+  {
+    if (playerHandler.isNew)
+    {
+      this.game.steps.ForEach(step =>
+        playerHandler.handler.Send(step.ToByteArray())
+      );
+      playerHandler.isNew = false;
+    }
+    else
+    {
+      playerHandler.handler.Send(nextStep.ToByteArray());
     }
   }
 }

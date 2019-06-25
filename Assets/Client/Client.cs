@@ -7,6 +7,7 @@ using UnityEngine;
 public class Client : MonoBehaviour
 {
   public GameComponent gameComponent;
+  public bool startServer = true;
   public Socket client;
 
   public void Attack()
@@ -18,10 +19,12 @@ public class Client : MonoBehaviour
 
   void Start()
   {
-    Server server = new Server();
-    server.Start();
+    if (startServer)
+    {
+      Server server = new Server();
+      server.Start();
+    }
     Game game = new Game();
-    game.gameComponent = this.gameComponent;
     this.gameComponent.game = game;
     StartCoroutine(this.Connect());
   }

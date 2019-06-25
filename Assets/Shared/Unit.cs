@@ -14,7 +14,6 @@ public class Unit
 
   public void Act()
   {
-    if (target == null) return;
     if (ShouldStop()) return;
     this.position = GetNextPosition(this.position);
   }
