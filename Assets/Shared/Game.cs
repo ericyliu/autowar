@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
@@ -13,13 +14,18 @@ public class Game
   public GameComponent gameComponent;
   public Vector2 spawnTarget = new Vector2(15f, 13f);
   public Vector2 enemyTarget = new Vector2(187f, 12f);
-  int step = 0;
+  public List<GameStep> steps = new List<GameStep>();
+  public int step = 0;
   int nextId = 0;
-  // Start is called before the first frame update
-  public void Start()
+
+  public GameStep Step(GameStep step)
   {
-    Thread thread = new Thread(new ThreadStart(this.GameLoop));
-    thread.Start();
+    if (step.id != this.step) throw new Exception();
+    if (this.step % 100 == 0) Spawn();
+    foreach (Unit unit in this.units) unit.Act();
+    GameStep nextStep = new GameStep(this.step++);
+    this.steps.Add(nextStep);
+    return nextStep;
   }
 
   public void Attack()
@@ -27,20 +33,6 @@ public class Game
     foreach (Unit unit in this.units)
     {
       unit.target = this.enemyTarget;
-    }
-  }
-
-  void GameLoop()
-  {
-    while (true)
-    {
-      if (step % 100 == 0) Spawn();
-      foreach (Unit unit in this.units)
-      {
-        unit.Act();
-      }
-      Thread.Sleep(60);
-      step++;
     }
   }
 
@@ -55,5 +47,25 @@ public class Game
       unit.target = this.spawnTarget;
       this.units.Add(unit);
     }
+  }
+}
+
+public class GameStep
+{
+  public int id = 0;
+
+  public GameStep(int id)
+  {
+    this.id = id;
+  }
+
+  public GameStep(byte[] bytes)
+  {
+    this.id = BitConverter.ToInt32(bytes, 0);
+  }
+
+  public byte[] ToByteArray()
+  {
+    return BitConverter.GetBytes(this.id);
   }
 }

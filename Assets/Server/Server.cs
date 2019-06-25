@@ -9,19 +9,21 @@ using UnityEngine;
 public class Server
 {
   static bool isRealServer = false;
-  Socket handler;
+  PlayerHandler playerHandler;
+  Game game;
 
   static void Main()
   {
     Server.isRealServer = true;
-    (new Server()).StartServer();
+    (new Server()).Start();
   }
 
-  public void StartServer()
+  public void Start()
   {
+    this.game = new Game();
     Console.WriteLine("Starting the server");
-    Thread thread = new Thread(new ThreadStart(this.ReceiveConnection));
-    thread.Start();
+    new Thread(new ThreadStart(this.PublishSteps)).Start();
+    new Thread(new ThreadStart(this.ReceiveConnection)).Start();
   }
 
   void ReceiveConnection()
@@ -34,21 +36,55 @@ public class Server
       Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
       listener.Bind(localEndPoint);
       listener.Listen(10);
+      Debug.Log("Waiting for connection");
       Console.WriteLine("Waiting for a connection...");
-      this.handler = listener.Accept();
+      this.playerHandler = new PlayerHandler(listener.Accept());
       Console.WriteLine("Connection Received");
-      // new Thread(new ThreadStart(this.ListenForClientControlState)).Start();
-      // new Thread(new ThreadStart(this.PublishCharacterState)).Start();
-
+      // new Thread(new ThreadStart(this.ListenForActions)).Start();
     }
     catch (Exception e)
     {
       Console.WriteLine(e);
-      if (handler != null)
+      if (this.playerHandler != null)
       {
-        handler.Shutdown(SocketShutdown.Both);
-        handler.Close();
+        this.playerHandler.handler.Shutdown(SocketShutdown.Both);
+        this.playerHandler.handler.Close();
       }
+    }
+  }
+
+  // void ListenForActions()
+  // {
+  //   while (true)
+  //   {
+  //     if (this.handler == null) break;
+  //     byte[] bytes = new byte[1024];
+  //     this.handler.Receive(bytes);
+  //     List<Action> actions =
+  //   }
+  // }
+
+  void PublishSteps()
+  {
+    while (true)
+    {
+      GameStep nextStep = this.game.Step(new GameStep(this.game.step));
+      if (this.playerHandler != null)
+      {
+        if (this.playerHandler.isNew)
+        {
+          foreach (GameStep step in this.game.steps)
+          {
+            this.playerHandler.handler.Send(step.ToByteArray());
+          }
+          this.playerHandler.isNew = false;
+        }
+        else
+        {
+          this.playerHandler.handler.Send(nextStep.ToByteArray());
+        }
+      }
+      Thread.Sleep(60);
     }
   }
 
@@ -80,6 +116,17 @@ public class Server
   //     Thread.Sleep(10);
   //   }
   // }
+}
+
+public class PlayerHandler
+{
+  public bool isNew = true;
+  public Socket handler;
+
+  public PlayerHandler(Socket handler)
+  {
+    this.handler = handler;
+  }
 }
 
 // public class ServerCharacter

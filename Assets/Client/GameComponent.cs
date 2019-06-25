@@ -6,12 +6,25 @@ public class GameComponent : MonoBehaviour
 {
   public GameObject soldierPrefab;
   public Game game;
-
+  public List<GameStep> steps = new List<GameStep>();
   public Dictionary<int, UnitComponent> unitComponents = new Dictionary<int, UnitComponent>();
 
   void Update()
   {
-    foreach (Unit unit in game.units)
+    this.StepGame();
+    this.SpawnUnits();
+  }
+
+  void StepGame()
+  {
+    List<GameStep> currentSteps = this.steps;
+    this.steps = new List<GameStep>();
+    foreach (GameStep step in currentSteps) game.Step(step);
+  }
+
+  void SpawnUnits()
+  {
+    foreach (Unit unit in this.game.units)
     {
       if (!unitComponents.ContainsKey(unit.id))
       {
