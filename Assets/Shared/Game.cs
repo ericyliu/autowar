@@ -15,17 +15,27 @@ public class Game
   public Vector2 spawnTarget = new Vector2(15f, 13f);
   public Vector2 enemyTarget = new Vector2(187f, 12f);
   public List<GameStep> steps = new List<GameStep>();
+  public List<GameAction> actions = new List<GameAction>();
   public int step = 0;
   int nextId = 0;
 
-  public GameStep Step(GameStep step)
+  public GameStep Step(GameStep step = null)
   {
-    if (step.id != this.step) throw new Exception();
-    if (this.step % 100 == 0) Spawn();
+    if (step != null && step.id != this.step) throw new Exception();
+    if (step == null)
+    {
+      step = new GameStep(this.step, this.actions);
+      this.steps.Add(step);
+      this.actions = new List<GameAction>();
+    }
+    foreach (GameAction action in step.actions)
+    {
+      if (action == GameAction.Attack) Attack();
+    }
+    if (step.id % 100 == 0) Spawn();
     foreach (Unit unit in this.units) unit.Act();
-    GameStep nextStep = new GameStep(this.step++);
-    this.steps.Add(nextStep);
-    return nextStep;
+    this.step++;
+    return step;
   }
 
   public void Attack()
@@ -47,25 +57,5 @@ public class Game
       unit.target = this.spawnTarget;
       this.units.Add(unit);
     }
-  }
-}
-
-public class GameStep
-{
-  public int id = 0;
-
-  public GameStep(int id)
-  {
-    this.id = id;
-  }
-
-  public GameStep(byte[] bytes)
-  {
-    this.id = BitConverter.ToInt32(bytes, 0);
-  }
-
-  public byte[] ToByteArray()
-  {
-    return BitConverter.GetBytes(this.id);
   }
 }

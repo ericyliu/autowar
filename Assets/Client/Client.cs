@@ -9,6 +9,13 @@ public class Client : MonoBehaviour
   public GameComponent gameComponent;
   public Socket client;
 
+  public void Attack()
+  {
+    if (this.client == null) return;
+    byte[] bytes = { GameStep.GameActionToByte(GameAction.Attack) };
+    this.client.Send(bytes);
+  }
+
   void Start()
   {
     Server server = new Server();
@@ -36,7 +43,6 @@ public class Client : MonoBehaviour
       Debug.Log("Connecting to server...");
       client.Connect(remoteEp);
       Debug.Log("Successfully connected to server");
-      // StartCoroutine(this.SendClientControlState());
       StartCoroutine(this.ReceiveGameSteps());
     }
     catch (Exception e)
@@ -59,7 +65,7 @@ public class Client : MonoBehaviour
   {
     while (this.client != null)
     {
-      byte[] bytes = new byte[4];
+      byte[] bytes = new byte[GameStep.BYTE_ARRAY_SIZE];
       this.client.Receive(bytes);
       GameStep gameStep = new GameStep(bytes);
       gameComponent.steps.Add(gameStep);
