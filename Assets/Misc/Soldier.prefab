@@ -104,9 +104,9 @@ GameObject:
   - component: {fileID: 7312955348786397590}
   - component: {fileID: 7312955348786397585}
   - component: {fileID: 7312955348786397584}
-  - component: {fileID: 7312955348786397588}
+  - component: {fileID: 7383425172284048507}
   m_Layer: 0
-  m_Name: Soldier (0)
+  m_Name: Soldier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -186,7 +186,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &7312955348786397588
+--- !u!114 &7383425172284048507
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -195,12 +195,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 7312955348786397587}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 276e080a9c456df4fa2380568926964c, type: 3}
+  m_Script: {fileID: 11500000, guid: baede0350400a9a43827df6e5786c0a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {x: 0, y: 0}
-  target: {x: 0, y: 0}
-  speed: 3
-  size: 1.5
-  height: 1
-  game: {fileID: 0}

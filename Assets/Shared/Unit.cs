@@ -2,26 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Unit : MonoBehaviour
+public class Unit
 {
+  public int id;
   public Vector2 position;
   public Vector2 target;
   public float speed = 3f;
   public float size = 1.5f;
   public float height = 1f;
   public Game game;
-
-
-  void Update()
-  {
-    Vector3 lastPosition = this.transform.position;
-    this.transform.position = VectorUtil.Vector2To3(this.position, this.height);
-    Vector3 direction = (this.transform.position - lastPosition).normalized;
-    if (direction != Vector3.zero)
-    {
-      this.transform.forward = Vector3.RotateTowards(this.transform.forward, direction, 50f * Time.deltaTime, 0f);
-    }
-  }
 
   public void Act()
   {
