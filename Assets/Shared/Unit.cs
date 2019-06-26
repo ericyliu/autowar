@@ -2,9 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum UnitType
+{
+  Base,
+  Soldier
+}
+
 public class Unit
 {
   public int id;
+  public UnitType type;
   public Vector2 position;
   public Vector2 target;
   public float speed = 3f;
@@ -13,9 +20,10 @@ public class Unit
   public Game game;
   public Player player;
 
-  public Unit(int id, Player player, Vector2 position)
+  public Unit(int id, UnitType type, Player player, Vector2 position)
   {
     this.id = id;
+    this.type = type;
     this.player = player;
     this.position = position;
   }

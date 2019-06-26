@@ -12,7 +12,7 @@ public class Spawner
   }
   public Unit SpawnBase(Player player, Vector2 position)
   {
-    var unit = this.Spawn(player, position);
+    var unit = this.Spawn(UnitType.Base, player, position);
     unit.speed = 0f;
     unit.size = 4.5f;
     unit.height = 2.4f;
@@ -21,16 +21,16 @@ public class Spawner
 
   public Unit SpawnSoldier(Player player, Vector2 position)
   {
-    var unit = this.Spawn(player, position);
+    var unit = this.Spawn(UnitType.Soldier, player, position);
     unit.speed = 3f;
     unit.size = 1.5f;
     unit.height = 1f;
     return unit;
   }
 
-  Unit Spawn(Player player, Vector2 position)
+  Unit Spawn(UnitType type, Player player, Vector2 position)
   {
-    var unit = new Unit(this.nextId++, player, position);
+    var unit = new Unit(this.nextId++, type, player, position);
     unit.game = this.game;
     this.game.units.Add(unit);
     return unit;

@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class GameComponent : MonoBehaviour
 {
+  public SpawnerComponent spawnerComponent;
   public int id = 0;
   public Player player;
-  public GameObject soldierPrefab;
+
   public UI ui;
   public Game game;
   public List<GameStep> steps = new List<GameStep>();
@@ -36,20 +37,8 @@ public class GameComponent : MonoBehaviour
     {
       if (!unitComponents.ContainsKey(unit.id))
       {
-        unitComponents.Add(unit.id, Spawn(unit));
+        unitComponents.Add(unit.id, spawnerComponent.Spawn(unit));
       }
     }
-  }
-
-  UnitComponent Spawn(Unit unit)
-  {
-    GameObject unitObject = Instantiate(
-      soldierPrefab,
-      VectorUtil.Vector2To3(unit.position, unit.height),
-      Quaternion.identity
-    );
-    UnitComponent unitComponent = unitObject.GetComponent<UnitComponent>();
-    unitComponent.unit = unit;
-    return unitComponent;
   }
 }
