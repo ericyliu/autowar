@@ -9,8 +9,18 @@ using UnityEngine;
 public class Server
 {
   static bool localhost = true;
+
+  public static bool DidPlayerDisconnect(Exception e)
+  {
+    if (e.GetType().Equals(new ObjectDisposedException("").GetType())) return true;
+    if (e.GetType().Equals(new SocketException().GetType())) return true;
+    return false;
+  }
+
   List<PlayerHandler> playerHandlers = new List<PlayerHandler>();
-  Game game;
+  List<GameWebObject> gameWebObjects = new List<GameWebObject>();
+  int port = 11000;
+  int nextId = 0;
 
   static void Main()
   {
@@ -20,9 +30,6 @@ public class Server
 
   public void Start()
   {
-    this.game = new Game();
-    Console.WriteLine("Starting the server");
-    new Thread(() => this.PublishSteps()).Start();
     new Thread(() => this.ReceiveConnection()).Start();
   }
 
@@ -30,75 +37,123 @@ public class Server
   {
     IPHostEntry host = Dns.GetHostEntry(Server.localhost ? "localhost" : Dns.GetHostName());
     IPAddress ipAddress = host.AddressList[0];
-    IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
-    try
+    IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
+    Console.WriteLine("Starting the server on port: " + port);
+    Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+    listener.Bind(localEndPoint);
+    listener.Listen(10);
+    this.HandleConnection(listener);
+  }
+
+  void HandleConnection(Socket listener)
+  {
+    while (true)
     {
-      Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-      listener.Bind(localEndPoint);
-      listener.Listen(10);
-      Console.WriteLine("Waiting for a connection...");
-      var playerHandler = new PlayerHandler(listener.Accept());
+      var playerHandler = new PlayerHandler(this.nextId++, listener.Accept());
       this.playerHandlers.Add(playerHandler);
       Console.WriteLine("Connection Received");
+      if (gameWebObjects.Count == 0) gameWebObjects.Add(new GameWebObject());
+      gameWebObjects[0].playerHandlers.Add(playerHandler);
       new Thread(() => this.ListenForActions(playerHandler)).Start();
-    }
-    catch (Exception e)
-    {
-      Console.WriteLine(e);
-      this.playerHandlers.ForEach(playerHandler =>
-      {
-        playerHandler.handler.Shutdown(SocketShutdown.Both);
-        playerHandler.handler.Close();
-      });
     }
   }
 
   void ListenForActions(PlayerHandler playerHandler)
   {
-    while (playerHandler != null)
+    try
     {
-      byte[] bytes = new byte[2];
-      playerHandler.handler.Receive(bytes);
-      this.game.actions.Add(new GameAction(bytes, this.game));
-    }
-  }
-
-  void PublishSteps()
-  {
-    while (true)
-    {
-      GameStep nextStep = this.game.Step();
-      this.playerHandlers.ForEach(playerHandler =>
-      {
-        if (playerHandler != null) PublishToPlayer(playerHandler, nextStep);
-      });
-      Thread.Sleep(60);
-    }
-  }
-
-  void PublishToPlayer(PlayerHandler playerHandler, GameStep nextStep)
-  {
-    if (playerHandler.isNew)
-    {
-      this.game.steps.ForEach(step =>
-        playerHandler.handler.Send(step.ToByteArray())
+      var gameWebObject = this.gameWebObjects.Find(
+        g => g.playerHandlers.IndexOf(playerHandler) > -1
       );
-      playerHandler.isNew = false;
+      while (playerHandler != null)
+      {
+        byte[] bytes = new byte[2];
+        playerHandler.handler.Receive(bytes);
+        gameWebObject.game.actions.Add(new GameAction(bytes, gameWebObject.game));
+      }
     }
-    else
+    catch (Exception e)
     {
-      playerHandler.handler.Send(nextStep.ToByteArray());
+      playerHandler.alive = false;
+      Console.WriteLine("player disconnected: " + playerHandler.id);
+      this.gameWebObjects = this.gameWebObjects.FindAll(
+        g => g.playerHandlers.FindAll(h => h.alive).Count > 0
+      );
+      if (Server.DidPlayerDisconnect(e)) return;
+      Console.WriteLine(e);
+      playerHandler.handler.Shutdown(SocketShutdown.Both);
+      playerHandler.handler.Close();
     }
   }
 }
 
 public class PlayerHandler
 {
+  public int id;
   public bool isNew = true;
   public Socket handler;
+  public bool alive = true;
 
-  public PlayerHandler(Socket handler)
+  public PlayerHandler(int id, Socket handler)
   {
+    this.id = id;
     this.handler = handler;
+  }
+}
+
+public class GameWebObject
+{
+  public Game game = new Game();
+  public List<PlayerHandler> playerHandlers = new List<PlayerHandler>();
+
+  public GameWebObject()
+  {
+    Console.WriteLine("new game has started");
+    new Thread(() => this.PublishSteps(this)).Start();
+  }
+
+  void PublishSteps(GameWebObject gameWebObject)
+  {
+    try
+    {
+      while (true)
+      {
+        GameStep nextStep = gameWebObject.game.Step();
+        gameWebObject.playerHandlers.ForEach(playerHandler =>
+        {
+          if (playerHandler != null) PublishToPlayer(playerHandler, nextStep);
+        });
+        Thread.Sleep(60);
+      }
+    }
+    catch (Exception e)
+    {
+      Console.WriteLine(e);
+    }
+  }
+
+  void PublishToPlayer(PlayerHandler playerHandler, GameStep nextStep)
+  {
+    try
+    {
+      if (playerHandler.isNew)
+      {
+        this.game.steps.ForEach(step =>
+          playerHandler.handler.Send(step.ToByteArray())
+        );
+        playerHandler.isNew = false;
+      }
+      else
+      {
+        playerHandler.handler.Send(nextStep.ToByteArray());
+      }
+    }
+    catch (Exception e)
+    {
+      if (Server.DidPlayerDisconnect(e)) return;
+      Console.WriteLine(e.GetType());
+      playerHandler.handler.Shutdown(SocketShutdown.Both);
+      playerHandler.handler.Close();
+    }
   }
 }

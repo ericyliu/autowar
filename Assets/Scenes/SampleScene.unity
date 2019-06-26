@@ -457,7 +457,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameComponent: {fileID: 88920330}
-  startServer: 1
+  startServer: 0
 --- !u!114 &88920332
 MonoBehaviour:
   m_ObjectHideFlags: 0

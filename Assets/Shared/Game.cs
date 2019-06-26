@@ -54,7 +54,6 @@ public class Game
     }
     foreach (GameAction action in step.actions)
     {
-      Debug.Log("Action " + action.ToString());
       if (action.type == GameActionType.Attack) Attack(action.player);
     }
     if (step.id % 100 == 0) Spawn();
