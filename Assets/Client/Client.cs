@@ -4,10 +4,17 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 
+public enum ServerOption
+{
+  Self,
+  Local,
+  Hosted
+}
+
 public class Client : MonoBehaviour
 {
   public GameComponent gameComponent;
-  public bool startServer = true;
+  public ServerOption serverOption = ServerOption.Self;
   public Socket client;
   public Game game;
 
@@ -19,7 +26,7 @@ public class Client : MonoBehaviour
 
   void Start()
   {
-    if (startServer)
+    if (this.serverOption == ServerOption.Self)
     {
       Server.localhost = true;
       Server server = new Server();
@@ -35,9 +42,8 @@ public class Client : MonoBehaviour
   {
     yield return new WaitForSeconds(1);
     byte[] bytes = new byte[1024];
-
-    // IPHostEntry host = Dns.GetHostEntry(game.targetServer == TargetServer.Local ? "localhost" : "104.196.10.129");
-    IPHostEntry host = Dns.GetHostEntry("localhost");
+    string hostString = this.serverOption == ServerOption.Hosted ? "104.196.10.129" : "localhost";
+    IPHostEntry host = Dns.GetHostEntry(hostString);
     IPAddress ipAddress = host.AddressList[0];
     IPEndPoint remoteEp = new IPEndPoint(ipAddress, 11000);
 
