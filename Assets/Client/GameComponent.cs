@@ -7,9 +7,15 @@ public class GameComponent : MonoBehaviour
   public int id = 0;
   public Player player;
   public GameObject soldierPrefab;
+  public UI ui;
   public Game game;
   public List<GameStep> steps = new List<GameStep>();
   public Dictionary<int, UnitComponent> unitComponents = new Dictionary<int, UnitComponent>();
+
+  void Start()
+  {
+    this.ui.LookAtBase(this.id);
+  }
 
   void Update()
   {

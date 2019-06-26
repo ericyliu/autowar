@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class UI : MonoBehaviour
 {
+
   public GameObject cameraRig;
   public Slider cameraSlider;
   public float cameraMaxX = 170f;
@@ -14,6 +15,11 @@ public class UI : MonoBehaviour
     cameraSlider.onValueChanged.AddListener(delegate { OnSliderChange(); });
   }
 
+  public void LookAtBase(int id)
+  {
+    cameraSlider.value = id;
+    this.OnSliderChange();
+  }
   public void OnSliderChange()
   {
     cameraRig.transform.position = new Vector3(

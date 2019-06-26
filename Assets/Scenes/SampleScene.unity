@@ -443,6 +443,7 @@ MonoBehaviour:
   id: 0
   soldierPrefab: {fileID: 7312955348786397587, guid: 574f905f6b8336546aea5bbd7e4d2a48,
     type: 3}
+  ui: {fileID: 608676036}
 --- !u!114 &88920331
 MonoBehaviour:
   m_ObjectHideFlags: 0
