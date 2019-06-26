@@ -62,8 +62,8 @@ public class Unit
       .Sort((unit1, unit2) =>
       {
         var unit1Closer = Vector2.Distance(unit1.position, this.position) <= Vector2.Distance(unit2.position, this.position);
-        if (unit1Closer) return 1;
-        else return -1;
+        if (unit1Closer) return -1;
+        else return 1;
       });
     this.attackTarget = units[0];
     return true;
