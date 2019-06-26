@@ -12,11 +12,13 @@ public class SpawnerComponent : MonoBehaviour
     if (unit.type == UnitType.Base) prefab = basePrefab;
     else if (unit.type == UnitType.Soldier) prefab = soldierPrefab;
     if (prefab == null) throw new Exception("No prefab exists for " + unit.type);
-    UnitComponent unitComponent = Instantiate(
+    var unitObject = Instantiate(
       prefab,
       VectorUtil.Vector2To3(unit.position, unit.height),
       Quaternion.identity
-    ).GetComponent<UnitComponent>();
+    );
+    unitObject.name = unit.id + ": " + unit.type;
+    UnitComponent unitComponent = unitObject.GetComponent<UnitComponent>();
     unitComponent.unit = unit;
     return unitComponent;
   }
