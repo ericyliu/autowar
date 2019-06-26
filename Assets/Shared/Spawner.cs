@@ -16,6 +16,7 @@ public class Spawner
     unit.speed = 0f;
     unit.size = 4.5f;
     unit.height = 2.4f;
+    unit.health = 1000;
     return unit;
   }
 
