@@ -11,6 +11,14 @@ public class Unit
   public float size = 1.5f;
   public float height = 1f;
   public Game game;
+  public Player player;
+
+  public Unit(int id, Player player, Vector2 position)
+  {
+    this.id = id;
+    this.player = player;
+    this.position = position;
+  }
 
   public void Act()
   {

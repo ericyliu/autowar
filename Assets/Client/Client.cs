@@ -9,12 +9,12 @@ public class Client : MonoBehaviour
   public GameComponent gameComponent;
   public bool startServer = true;
   public Socket client;
+  public Game game;
 
   public void Attack()
   {
     if (this.client == null) return;
-    byte[] bytes = { GameStep.GameActionToByte(GameAction.Attack) };
-    this.client.Send(bytes);
+    this.client.Send(GameAction.CreateAttackAction(gameComponent.player).ToByteArray());
   }
 
   void Start()
@@ -24,8 +24,9 @@ public class Client : MonoBehaviour
       Server server = new Server();
       server.Start();
     }
-    Game game = new Game();
-    this.gameComponent.game = game;
+    this.game = new Game();
+    this.gameComponent.game = this.game;
+    this.gameComponent.player = this.game.players[this.gameComponent.id];
     StartCoroutine(this.Connect());
   }
 
@@ -70,7 +71,7 @@ public class Client : MonoBehaviour
     {
       byte[] bytes = new byte[GameStep.BYTE_ARRAY_SIZE];
       this.client.Receive(bytes);
-      GameStep gameStep = new GameStep(bytes);
+      GameStep gameStep = new GameStep(bytes, this.game);
       gameComponent.steps.Add(gameStep);
       yield return new WaitForSeconds(.01f);
     }

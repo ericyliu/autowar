@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameComponent : MonoBehaviour
 {
+  public int id = 0;
+  public Player player;
   public GameObject soldierPrefab;
   public Game game;
   public List<GameStep> steps = new List<GameStep>();

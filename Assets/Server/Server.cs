@@ -57,10 +57,9 @@ public class Server
   {
     while (playerHandler != null)
     {
-      byte[] bytes = new byte[1];
+      byte[] bytes = new byte[2];
       playerHandler.handler.Receive(bytes);
-      GameAction action = GameStep.ByteToGameAction(bytes[0]);
-      this.game.actions.Add(action);
+      this.game.actions.Add(new GameAction(bytes, this.game));
     }
   }
 
