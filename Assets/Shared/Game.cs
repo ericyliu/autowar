@@ -59,6 +59,7 @@ public class Game
     }
     if (step.id % 100 == 0) Spawn();
     foreach (Unit unit in this.units) unit.Act();
+    this.CleanupUnits();
     this.step++;
     return step;
   }
@@ -80,5 +81,12 @@ public class Game
         soldier.target = player.spawnTarget;
       });
     });
+  }
+
+  void CleanupUnits()
+  {
+    var units = this.units;
+    this.units = new List<Unit>();
+    foreach (Unit unit in units) if (unit.health > 0) this.units.Add(unit);
   }
 }

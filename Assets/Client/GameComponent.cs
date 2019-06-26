@@ -21,6 +21,7 @@ public class GameComponent : MonoBehaviour
   void Update()
   {
     this.StepGame();
+    this.DespawnUnits();
     this.SpawnUnits();
   }
 
@@ -29,6 +30,23 @@ public class GameComponent : MonoBehaviour
     List<GameStep> currentSteps = this.steps;
     this.steps = new List<GameStep>();
     foreach (GameStep step in currentSteps) game.Step(step);
+  }
+
+  void DespawnUnits()
+  {
+    var componentsToDelete = new List<int>();
+    foreach (int id in this.unitComponents.Keys)
+    {
+      if (this.game.units.Find(unit => unit.id == id) == null)
+      {
+        componentsToDelete.Add(id);
+      };
+    }
+    componentsToDelete.ForEach(id =>
+    {
+      Destroy(this.unitComponents[id].gameObject);
+      this.unitComponents.Remove(id);
+    });
   }
 
   void SpawnUnits()
