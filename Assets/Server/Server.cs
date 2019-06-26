@@ -76,9 +76,12 @@ public class Server
     {
       playerHandler.alive = false;
       Console.WriteLine("player disconnected: " + playerHandler.id);
-      this.gameWebObjects = this.gameWebObjects.FindAll(
-        g => g.playerHandlers.FindAll(h => h.alive).Count > 0
-      );
+      this.gameWebObjects = this.gameWebObjects.FindAll(g =>
+      {
+        var isAlive = g.playerHandlers.FindAll(h => h.alive).Count > 0;
+        if (!isAlive) g.thread.Abort();
+        return isAlive;
+      });
       if (Server.DidPlayerDisconnect(e)) return;
       Console.WriteLine(e);
       playerHandler.handler.Shutdown(SocketShutdown.Both);
@@ -105,11 +108,12 @@ public class GameWebObject
 {
   public Game game = new Game();
   public List<PlayerHandler> playerHandlers = new List<PlayerHandler>();
+  public Thread thread;
 
   public GameWebObject()
   {
     Console.WriteLine("new game has started");
-    new Thread(() => this.PublishSteps(this)).Start();
+    this.thread = new Thread(() => this.PublishSteps(this)).Start();
   }
 
   void PublishSteps(GameWebObject gameWebObject)
