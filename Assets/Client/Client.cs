@@ -21,6 +21,7 @@ public class Client : MonoBehaviour
   {
     if (startServer)
     {
+      Server.localhost = true;
       Server server = new Server();
       server.Start();
     }

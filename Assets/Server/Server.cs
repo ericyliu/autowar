@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class Server
 {
-  static bool localhost = true;
+  public static bool localhost = false;
 
   public static bool DidPlayerDisconnect(Exception e)
   {
@@ -17,14 +17,19 @@ public class Server
     return false;
   }
 
+  public static bool DidThreadAbort(Exception e)
+  {
+    return true;
+  }
+
   List<PlayerHandler> playerHandlers = new List<PlayerHandler>();
   List<GameWebObject> gameWebObjects = new List<GameWebObject>();
   int port = 11000;
   int nextId = 0;
 
-  static void Main()
+  static void Main(string[] args)
   {
-    // Server.localhost = false;
+    if (args.Length > 0 && args[0] == "localhost") Server.localhost = true;
     (new Server()).Start();
   }
 
@@ -42,26 +47,26 @@ public class Server
     Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
     listener.Bind(localEndPoint);
     listener.Listen(10);
-    this.HandleConnection(listener);
+    this.ReceiveConnections(listener);
   }
 
-  void HandleConnection(Socket listener)
+  void ReceiveConnections(Socket listener)
   {
     while (true)
     {
       var playerHandler = new PlayerHandler(this.nextId++, listener.Accept());
-      this.playerHandlers.Add(playerHandler);
-      Console.WriteLine("Connection Received");
-      if (gameWebObjects.Count == 0) gameWebObjects.Add(new GameWebObject());
-      gameWebObjects[0].playerHandlers.Add(playerHandler);
       new Thread(() => this.ListenForActions(playerHandler)).Start();
     }
   }
 
   void ListenForActions(PlayerHandler playerHandler)
   {
+    Console.WriteLine("Connection Received");
     try
     {
+      this.playerHandlers.Add(playerHandler);
+      if (gameWebObjects.Count == 0) gameWebObjects.Add(new GameWebObject());
+      gameWebObjects[0].playerHandlers.Add(playerHandler);
       var gameWebObject = this.gameWebObjects.Find(
         g => g.playerHandlers.IndexOf(playerHandler) > -1
       );
@@ -113,7 +118,8 @@ public class GameWebObject
   public GameWebObject()
   {
     Console.WriteLine("new game has started");
-    this.thread = new Thread(() => this.PublishSteps(this)).Start();
+    this.thread = new Thread(() => this.PublishSteps(this));
+    this.thread.Start();
   }
 
   void PublishSteps(GameWebObject gameWebObject)
@@ -132,6 +138,8 @@ public class GameWebObject
     }
     catch (Exception e)
     {
+      Console.WriteLine("Closing game");
+      if (Server.DidThreadAbort(e)) return;
       Console.WriteLine(e);
     }
   }
