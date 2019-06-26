@@ -4,7 +4,15 @@ using UnityEngine;
 
 public class UnitComponent : MonoBehaviour
 {
+  public GameObject teamColorObject;
   public Unit unit;
+
+  public void SetTeamColor()
+  {
+    var renderer = this.teamColorObject.GetComponent<Renderer>();
+    var color = unit.player.id == 0 ? Color.red : Color.blue;
+    renderer.material.SetColor("_TeamColor", color);
+  }
 
   void Update()
   {
