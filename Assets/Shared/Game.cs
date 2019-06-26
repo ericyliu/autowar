@@ -77,7 +77,7 @@ public class Game
       player.spawns.ForEach(spawn =>
       {
         Unit soldier = this.spawner.SpawnSoldier(player, spawn);
-        soldier.target = player.spawnTarget;
+        soldier.target = player.enemy.playerBase.position;
       });
     });
   }

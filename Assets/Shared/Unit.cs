@@ -24,6 +24,7 @@ public class Unit
   public int damage = 1;
   public Game game;
   public Player player;
+  public bool attacking = false;
 
   public Unit(int id, UnitType type, Player player, Vector2 position)
   {
@@ -35,6 +36,7 @@ public class Unit
 
   public void Act()
   {
+    this.attacking = false;
     if (this.Attack()) return;
     if (this.ShouldStop()) return;
     this.Move();
@@ -42,9 +44,11 @@ public class Unit
 
   bool Attack()
   {
+    if (this.attackTarget != null && this.attackTarget.health <= 0) this.attackTarget = null;
     if (this.attackTarget == null || this.attackTarget.health <= 0) this.GetAttackTarget();
     if (this.attackTarget == null) return false;
     if (this.GetDistanceAway(this.attackTarget) > this.attackRange) return false;
+    this.attacking = true;
     this.attackTarget.health -= this.damage;
     return true;
   }
