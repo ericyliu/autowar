@@ -38,6 +38,15 @@ public class Client : MonoBehaviour
     StartCoroutine(this.Connect());
   }
 
+  void OnApplicationQuit()
+  {
+    if (this.client != null)
+    {
+      client.Shutdown(SocketShutdown.Both);
+      client.Close();
+    }
+  }
+
   IEnumerator Connect()
   {
     yield return new WaitForSeconds(1);

@@ -35,7 +35,22 @@ public class Server
 
   public void Start()
   {
+    new Thread(this.PruneGameWebObjects).Start();
     new Thread(() => this.ReceiveConnection()).Start();
+  }
+
+  void PruneGameWebObjects()
+  {
+    while (true)
+    {
+      this.gameWebObjects = this.gameWebObjects.FindAll(g =>
+      {
+        var isAlive = g.playerHandlers.FindAll(h => h.alive).Count > 0;
+        if (!isAlive) g.thread.Abort();
+        return isAlive;
+      });
+      Thread.Sleep(1000);
+    }
   }
 
   void ReceiveConnection()
@@ -65,8 +80,8 @@ public class Server
     try
     {
       this.playerHandlers.Add(playerHandler);
-      if (gameWebObjects.Count == 0) gameWebObjects.Add(new GameWebObject());
-      gameWebObjects[0].playerHandlers.Add(playerHandler);
+      if (gameWebObjects.Count == 0) gameWebObjects.Add(new GameWebObject(playerHandler));
+      else gameWebObjects[0].playerHandlers.Add(playerHandler);
       var gameWebObject = this.gameWebObjects.Find(
         g => g.playerHandlers.IndexOf(playerHandler) > -1
       );
@@ -79,14 +94,6 @@ public class Server
     }
     catch (Exception e)
     {
-      playerHandler.alive = false;
-      Console.WriteLine("player disconnected: " + playerHandler.id);
-      this.gameWebObjects = this.gameWebObjects.FindAll(g =>
-      {
-        var isAlive = g.playerHandlers.FindAll(h => h.alive).Count > 0;
-        if (!isAlive) g.thread.Abort();
-        return isAlive;
-      });
       if (Server.DidPlayerDisconnect(e)) return;
       Console.WriteLine(e);
       playerHandler.handler.Shutdown(SocketShutdown.Both);
@@ -115,26 +122,29 @@ public class GameWebObject
   public List<PlayerHandler> playerHandlers = new List<PlayerHandler>();
   public Thread thread;
 
-  public GameWebObject()
+  public GameWebObject(PlayerHandler playerHandler)
   {
-    Console.WriteLine("new game has started");
-    this.thread = new Thread(() => this.PublishSteps(this));
+    Console.WriteLine("Starting game");
+    this.playerHandlers.Add(playerHandler);
+    this.thread = new Thread(this.PublishSteps);
     this.thread.Start();
   }
 
-  void PublishSteps(GameWebObject gameWebObject)
+  void PublishSteps()
   {
     try
     {
       while (true)
       {
-        GameStep nextStep = gameWebObject.game.Step();
-        gameWebObject.playerHandlers.ForEach(playerHandler =>
-        {
-          if (playerHandler != null) PublishToPlayer(playerHandler, nextStep);
-        });
+        var alivePlayerHandlers = this.playerHandlers.FindAll(p => p.alive);
+        if (alivePlayerHandlers.Count == 0) break;
+        GameStep nextStep = this.game.Step();
+        alivePlayerHandlers.ForEach(playerHandler =>
+          PublishToPlayer(playerHandler, nextStep)
+        );
         Thread.Sleep(60);
       }
+      Console.WriteLine("Closing game");
     }
     catch (Exception e)
     {
@@ -162,6 +172,8 @@ public class GameWebObject
     }
     catch (Exception e)
     {
+      playerHandler.alive = false;
+      Console.WriteLine("player disconnected: " + playerHandler.id);
       if (Server.DidPlayerDisconnect(e)) return;
       Console.WriteLine(e.GetType());
       playerHandler.handler.Shutdown(SocketShutdown.Both);
