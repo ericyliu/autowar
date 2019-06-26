@@ -42,7 +42,7 @@ public class Client : MonoBehaviour
   {
     yield return new WaitForSeconds(1);
     byte[] bytes = new byte[1024];
-    string hostString = this.serverOption == ServerOption.Hosted ? "104.196.10.129" : "localhost";
+    string hostString = this.serverOption == ServerOption.Hosted ? "34.74.40.215" : "localhost";
     IPHostEntry host = Dns.GetHostEntry(hostString);
     IPAddress ipAddress = host.AddressList[0];
     IPEndPoint remoteEp = new IPEndPoint(ipAddress, 11000);
