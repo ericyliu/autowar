@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Unity 2019.3.0a4 Personal
+- Unity 2019.3.0a6 Personal
 
 ## Get Started
 
