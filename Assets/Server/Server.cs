@@ -14,7 +14,7 @@ public class Server
   {
     if (e.GetType().Equals(new ObjectDisposedException("").GetType())) return true;
     if (e.GetType().Equals(new SocketException().GetType())) return true;
-    return !playerHandler.alive;
+    return !playerHandler.handler.Connected;
   }
 
   public static bool DidThreadAbort(Exception e)
@@ -174,7 +174,7 @@ public class GameWebObject
     {
       playerHandler.alive = false;
       Console.WriteLine("player disconnected: " + playerHandler.id);
-      if (Server.DidPlayerDisconnect(e)) return;
+      if (Server.DidPlayerDisconnect(playerHandler, e)) return;
       Console.WriteLine(e.GetType());
       playerHandler.handler.Shutdown(SocketShutdown.Both);
       playerHandler.handler.Close();
