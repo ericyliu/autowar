@@ -10,6 +10,12 @@ public class Server
 {
   public static bool localhost = false;
 
+  static void Main(string[] args)
+  {
+    if (args.Length > 0 && args[0] == "localhost") Server.localhost = true;
+    (new Server()).Start();
+  }
+
   public static bool DidPlayerDisconnect(PlayerHandler playerHandler, Exception e)
   {
     if (e.GetType().Equals(new ObjectDisposedException("").GetType())) return true;
@@ -26,12 +32,6 @@ public class Server
   List<GameWebObject> gameWebObjects = new List<GameWebObject>();
   int port = 11000;
   int nextId = 0;
-
-  static void Main(string[] args)
-  {
-    if (args.Length > 0 && args[0] == "localhost") Server.localhost = true;
-    (new Server()).Start();
-  }
 
   public void Start()
   {
