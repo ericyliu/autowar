@@ -19,6 +19,11 @@ public class GameComponent : MonoBehaviour
     this.client.Send(GameAction.CreateBuyWorkerAction(this.player));
   }
 
+  public void Upgrade()
+  {
+    this.client.Send(GameAction.CreateUpgradeAction(this.player));
+  }
+
   public void Nuke()
   {
     this.client.Send(GameAction.CreateNukeAction(this.player));

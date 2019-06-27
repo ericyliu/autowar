@@ -7,6 +7,18 @@ using UnityEngine;
 public class Game
 {
   public const int WORKER_COST = 100;
+  public const int UPGRADE_COST = 500;
+
+  public static int GetBuyWorkerCost(Player player)
+  {
+    return Game.WORKER_COST * player.workers;
+  }
+
+  public static int GetUpgradeCost(Player player)
+  {
+    return Game.UPGRADE_COST * (player.upgrade + 1);
+  }
+
   public List<Unit> units = new List<Unit>();
   public List<Player> players = new List<Player>();
   public List<GameStep> steps = new List<GameStep>();
@@ -60,6 +72,9 @@ public class Game
         case GameActionType.BuyWorker:
           BuyWorker(action.player);
           break;
+        case GameActionType.Upgrade:
+          Upgrade(action.player);
+          break;
         case GameActionType.Nuke:
           Nuke(action.player);
           break;
@@ -75,10 +90,18 @@ public class Game
 
   void BuyWorker(Player player)
   {
-    var cost = Game.WORKER_COST * player.workers;
+    var cost = Game.GetBuyWorkerCost(player);
     if (player.gold < cost) return;
     player.gold -= cost;
-    player.workers += 1;
+    player.workers++;
+  }
+
+  void Upgrade(Player player)
+  {
+    var cost = Game.GetUpgradeCost(player);
+    if (player.gold < cost) return;
+    player.gold -= cost;
+    player.upgrade++;
   }
 
   void Nuke(Player player)

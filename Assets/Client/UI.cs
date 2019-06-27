@@ -10,7 +10,9 @@ public class UI : MonoBehaviour
   public GameObject cameraRig;
   public Slider cameraSlider;
   public Text goldText;
+  public Text upgradeText;
   public Text buyWorkerText;
+  public Text upgradeButtonText;
   public GameObject nukeButton;
   public Text nukeText;
   public float cameraMaxX = 170f;
@@ -26,7 +28,9 @@ public class UI : MonoBehaviour
     {
       var player = this.gameComponent.player;
       this.goldText.text = player.gold + "g +" + (player.workers * 10) + "g/s";
-      this.buyWorkerText.text = "Buy Worker (" + (player.workers * Game.WORKER_COST) + "g)";
+      this.upgradeText.text = "Upgrade Level: " + player.upgrade;
+      this.buyWorkerText.text = "Buy Worker (" + Game.GetBuyWorkerCost(player) + "g)";
+      this.upgradeButtonText.text = "Upgrade (" + Game.GetUpgradeCost(player) + "g)";
       this.nukeText.text = "Nuke (" + player.nukes + ")";
       if (player.nukes <= 0) nukeButton.SetActive(false);
     }

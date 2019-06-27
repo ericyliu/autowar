@@ -4,6 +4,7 @@ public enum GameActionType
 {
   Null,
   BuyWorker,
+  Upgrade,
   Nuke,
 }
 
@@ -14,6 +15,11 @@ public class GameAction
   public static GameAction CreateBuyWorkerAction(Player player)
   {
     return new GameAction(player, GameActionType.BuyWorker);
+  }
+
+  public static GameAction CreateUpgradeAction(Player player)
+  {
+    return new GameAction(player, GameActionType.Upgrade);
   }
 
   public static GameAction CreateNukeAction(Player player)

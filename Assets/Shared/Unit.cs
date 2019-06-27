@@ -32,6 +32,7 @@ public class Unit
     this.type = type;
     this.player = player;
     this.position = position;
+    this.health = this.health + (this.player.upgrade * 10);
   }
 
   public void Act()
@@ -49,7 +50,7 @@ public class Unit
     if (this.attackTarget == null) return false;
     if (this.GetDistanceAway(this.attackTarget) > this.attackRange) return false;
     this.attacking = true;
-    this.attackTarget.health -= this.damage;
+    this.attackTarget.health -= this.damage + this.player.upgrade;
     return true;
   }
 

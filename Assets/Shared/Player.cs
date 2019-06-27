@@ -12,6 +12,7 @@ public class Player
   public int gold = 100;
   public int workers = 1;
   public int nukes = 2;
+  public int upgrade = 0;
 
   public Player(
     int id,
