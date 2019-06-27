@@ -57,6 +57,7 @@ public class Game
       if (action.type == GameActionType.Attack) Attack(action.player);
     }
     if (step.id % 100 == 0) Spawn();
+    if (step.id % 15 == 0) GiveGold();
     foreach (Unit unit in this.units) unit.Act();
     this.CleanupUnits();
     this.step++;
@@ -68,6 +69,11 @@ public class Game
     this.units
       .FindAll(unit => unit.player.id == player.id)
       .ForEach(unit => unit.target = player.enemy.playerBase.position);
+  }
+
+  void GiveGold()
+  {
+    this.players.ForEach(player => player.gold += 10);
   }
 
   void Spawn()

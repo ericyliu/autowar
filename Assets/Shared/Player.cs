@@ -9,6 +9,7 @@ public class Player
   public Unit playerBase;
   public Game game;
   public Player enemy;
+  public int gold = 100;
 
   public Player(
     int id,
