@@ -74,7 +74,7 @@ public class GameAction
   {
     this.player = game.players.Find(player => player.id == bytes[0]);
     if (bytes[1] == 1) this.type = GameActionType.Attack;
-    else throw new Exception("int to game action type fail, byte: " + bytes[1]);
+    else throw new Exception("byte[] to game action type fail, byte: " + bytes[1]);
   }
 
   public byte[] ToByteArray()

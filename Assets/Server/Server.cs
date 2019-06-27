@@ -10,11 +10,11 @@ public class Server
 {
   public static bool localhost = false;
 
-  public static bool DidPlayerDisconnect(Exception e)
+  public static bool DidPlayerDisconnect(PlayerHandler playerHandler, Exception e)
   {
     if (e.GetType().Equals(new ObjectDisposedException("").GetType())) return true;
     if (e.GetType().Equals(new SocketException().GetType())) return true;
-    return false;
+    return !playerHandler.alive;
   }
 
   public static bool DidThreadAbort(Exception e)
@@ -94,7 +94,7 @@ public class Server
     }
     catch (Exception e)
     {
-      if (Server.DidPlayerDisconnect(e)) return;
+      if (Server.DidPlayerDisconnect(playerHandler, e)) return;
       Console.WriteLine(e);
       playerHandler.handler.Shutdown(SocketShutdown.Both);
       playerHandler.handler.Close();
