@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GameComponent : MonoBehaviour
 {
+  public Client client;
   public SpawnerComponent spawnerComponent;
   public int id = 0;
   public Player player;
@@ -12,6 +13,16 @@ public class GameComponent : MonoBehaviour
   public Game game;
   public List<GameStep> steps = new List<GameStep>();
   public Dictionary<int, UnitComponent> unitComponents = new Dictionary<int, UnitComponent>();
+
+  public void BuyWorker()
+  {
+    this.client.Send(GameAction.CreateBuyWorkerAction(this.player));
+  }
+
+  public void Nuke()
+  {
+    this.client.Send(GameAction.CreateNukeAction(this.player));
+  }
 
   void Start()
   {

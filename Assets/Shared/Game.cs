@@ -55,8 +55,15 @@ public class Game
     }
     foreach (GameAction action in step.actions)
     {
-      if (action.type == GameActionType.Attack) Attack(action.player);
-      if (action.type == GameActionType.BuyWorker) BuyWorker(action.player);
+      switch (action.type)
+      {
+        case GameActionType.BuyWorker:
+          BuyWorker(action.player);
+          break;
+        case GameActionType.Nuke:
+          Nuke(action.player);
+          break;
+      }
     }
     if (step.id % 100 == 0) Spawn();
     if (step.id % 20 == 0) GiveGold();
@@ -66,19 +73,23 @@ public class Game
     return step;
   }
 
-  public void Attack(Player player)
-  {
-    this.units
-      .FindAll(unit => unit.player.id == player.id)
-      .ForEach(unit => unit.target = player.enemy.playerBase.position);
-  }
-
-  public void BuyWorker(Player player)
+  void BuyWorker(Player player)
   {
     var cost = Game.WORKER_COST * player.workers;
     if (player.gold < cost) return;
     player.gold -= cost;
     player.workers += 1;
+  }
+
+  void Nuke(Player player)
+  {
+    if (player.nukes <= 0) return;
+    player.nukes--;
+    this.units.ForEach(unit =>
+    {
+      if (unit.type != UnitType.Base) unit.health = 0;
+      this.CleanupUnits();
+    });
   }
 
   void GiveGold()

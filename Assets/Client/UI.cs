@@ -11,6 +11,8 @@ public class UI : MonoBehaviour
   public Slider cameraSlider;
   public Text goldText;
   public Text buyWorkerText;
+  public GameObject nukeButton;
+  public Text nukeText;
   public float cameraMaxX = 170f;
   // Start is called before the first frame update
   void Start()
@@ -23,8 +25,10 @@ public class UI : MonoBehaviour
     if (this.gameComponent.game != null)
     {
       var player = this.gameComponent.player;
-      this.goldText.text = "(G) " + player.gold + " +" + (player.workers * 10) + "/s";
-      this.buyWorkerText.text = "Buy Worker (" + (player.workers * Game.WORKER_COST) + ")";
+      this.goldText.text = player.gold + "g +" + (player.workers * 10) + "g/s";
+      this.buyWorkerText.text = "Buy Worker (" + (player.workers * Game.WORKER_COST) + "g)";
+      this.nukeText.text = "Nuke (" + player.nukes + ")";
+      if (player.nukes <= 0) nukeButton.SetActive(false);
     }
   }
 

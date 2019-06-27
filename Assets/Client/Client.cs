@@ -15,19 +15,13 @@ public class Client : MonoBehaviour
 {
   public GameComponent gameComponent;
   public ServerOption serverOption = ServerOption.Self;
-  public Socket client;
+  public Socket socket;
   public Game game;
 
-  public void Attack()
+  public void Send(GameAction action)
   {
-    if (this.client == null) return;
-    this.client.Send(GameAction.CreateAttackAction(gameComponent.player).ToByteArray());
-  }
-
-  public void BuyWorker()
-  {
-    if (this.client == null) return;
-    this.client.Send(GameAction.CreateBuyWorkerAction(gameComponent.player).ToByteArray());
+    if (this.socket == null) return;
+    this.socket.Send(action.ToByteArray());
   }
 
   void Start()
@@ -46,10 +40,10 @@ public class Client : MonoBehaviour
 
   void OnApplicationQuit()
   {
-    if (this.client != null)
+    if (this.socket != null)
     {
-      client.Shutdown(SocketShutdown.Both);
-      client.Close();
+      this.socket.Shutdown(SocketShutdown.Both);
+      this.socket.Close();
     }
   }
 
@@ -62,12 +56,12 @@ public class Client : MonoBehaviour
     IPAddress ipAddress = host.AddressList[0];
     IPEndPoint remoteEp = new IPEndPoint(ipAddress, 11000);
 
-    client = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+    this.socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
     try
     {
       Debug.Log("Connecting to server...");
-      client.Connect(remoteEp);
+      this.socket.Connect(remoteEp);
       Debug.Log("Successfully connected to server");
       StartCoroutine(this.ReceiveGameSteps());
     }
@@ -79,20 +73,20 @@ public class Client : MonoBehaviour
         Debug.Log("Reconnecting in 1s");
         StartCoroutine(this.Connect());
       }
-      if (client != null)
+      if (this.socket != null)
       {
-        client.Shutdown(SocketShutdown.Both);
-        client.Close();
+        this.socket.Shutdown(SocketShutdown.Both);
+        this.socket.Close();
       }
     }
   }
 
   IEnumerator ReceiveGameSteps()
   {
-    while (this.client != null)
+    while (this.socket != null)
     {
       byte[] bytes = new byte[GameStep.BYTE_ARRAY_SIZE];
-      this.client.Receive(bytes);
+      this.socket.Receive(bytes);
       GameStep gameStep = new GameStep(bytes, this.game);
       gameComponent.steps.Add(gameStep);
       yield return new WaitForSeconds(.01f);
