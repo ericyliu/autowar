@@ -960,7 +960,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Upgrade (500)
+  m_Text: Upgrade (500g)
 --- !u!222 &249898774
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2595,7 +2595,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: (G) 100
+  m_Text: 100g +10g/s
 --- !u!222 &717076011
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2909,7 +2909,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Buy Worker (100)
+  m_Text: Buy Worker (100g)
 --- !u!222 &845898234
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5098,7 +5098,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Nuke
+  m_Text: Nuke (2)
 --- !u!222 &1675379412
 CanvasRenderer:
   m_ObjectHideFlags: 0
