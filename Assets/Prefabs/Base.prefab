@@ -89,8 +89,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3334830022756862512}
   - component: {fileID: 3334830022756862517}
-  - component: {fileID: -5216302533559300127}
   - component: {fileID: 702832319380137964}
+  - component: {fileID: -5216302533559300127}
   m_Layer: 0
   m_Name: Base
   m_TagString: Untagged
@@ -126,19 +126,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-5216302533559300127
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3334830022756862516}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baede0350400a9a43827df6e5786c0a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  teamColorObject: {fileID: 9166845104731330477}
 --- !u!95 &702832319380137964
 Animator:
   serializedVersion: 3
@@ -158,6 +145,20 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &-5216302533559300127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3334830022756862516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baede0350400a9a43827df6e5786c0a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  teamColorObject: {fileID: 9166845104731330477}
+  animator: {fileID: 702832319380137964}
 --- !u!1 &5002548217661037242
 GameObject:
   m_ObjectHideFlags: 0

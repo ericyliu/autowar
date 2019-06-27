@@ -5,6 +5,7 @@ using UnityEngine;
 public class UnitComponent : MonoBehaviour
 {
   public GameObject teamColorObject;
+  public Animator animator;
   public Unit unit;
 
   public void SetTeamColor()
@@ -15,6 +16,12 @@ public class UnitComponent : MonoBehaviour
   }
 
   void Update()
+  {
+    this.MoveAndRotate();
+    this.PlayAnimation();
+  }
+
+  void MoveAndRotate()
   {
     Vector3 direction = Vector3.zero;
     if (this.unit.attacking) direction = VectorUtil.Vector2To3(this.unit.attackTarget.position - this.unit.position, 0);
@@ -30,5 +37,11 @@ public class UnitComponent : MonoBehaviour
   void RotateToDirection(Vector3 direction)
   {
     this.transform.forward = Vector3.RotateTowards(this.transform.forward, direction, 50f * Time.deltaTime, 0f);
+  }
+
+  void PlayAnimation()
+  {
+    if (this.unit.attacking) this.animator.Play("Attack");
+    else this.animator.Play("Idle");
   }
 }
