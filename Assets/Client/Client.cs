@@ -24,6 +24,12 @@ public class Client : MonoBehaviour
     this.client.Send(GameAction.CreateAttackAction(gameComponent.player).ToByteArray());
   }
 
+  public void BuyWorker()
+  {
+    if (this.client == null) return;
+    this.client.Send(GameAction.CreateBuyWorkerAction(gameComponent.player).ToByteArray());
+  }
+
   void Start()
   {
     if (this.serverOption == ServerOption.Self)

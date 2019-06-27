@@ -10,6 +10,7 @@ public class Player
   public Game game;
   public Player enemy;
   public int gold = 100;
+  public int workers = 1;
 
   public Player(
     int id,

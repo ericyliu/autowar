@@ -50,7 +50,8 @@ public class GameStep
 
 public enum GameActionType
 {
-  Attack
+  Attack,
+  BuyWorker
 }
 
 public class GameAction
@@ -59,6 +60,11 @@ public class GameAction
   public static GameAction CreateAttackAction(Player player)
   {
     return new GameAction(player, GameActionType.Attack);
+  }
+
+  public static GameAction CreateBuyWorkerAction(Player player)
+  {
+    return new GameAction(player, GameActionType.BuyWorker);
   }
 
   public Player player;
@@ -74,6 +80,7 @@ public class GameAction
   {
     this.player = game.players.Find(player => player.id == bytes[0]);
     if (bytes[1] == 1) this.type = GameActionType.Attack;
+    else if (bytes[1] == 2) this.type = GameActionType.BuyWorker;
     else throw new Exception("byte[] to game action type fail, byte: " + bytes[1]);
   }
 
@@ -82,13 +89,7 @@ public class GameAction
     var bytes = new byte[2];
     bytes[0] = BitConverter.GetBytes(this.player.id)[0];
     if (this.type == GameActionType.Attack) bytes[1] = 1;
+    if (this.type == GameActionType.BuyWorker) bytes[1] = 2;
     return bytes;
-  }
-
-  public override string ToString()
-  {
-    var s = this.type.ToString() + " - ";
-    if (this.type == GameActionType.Attack) s += "player: " + this.player.id;
-    return s;
   }
 }

@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class Game
 {
+  public const int WORKER_COST = 100;
   public List<Unit> units = new List<Unit>();
   public List<Player> players = new List<Player>();
   public List<GameStep> steps = new List<GameStep>();
@@ -55,9 +56,10 @@ public class Game
     foreach (GameAction action in step.actions)
     {
       if (action.type == GameActionType.Attack) Attack(action.player);
+      if (action.type == GameActionType.BuyWorker) BuyWorker(action.player);
     }
     if (step.id % 100 == 0) Spawn();
-    if (step.id % 15 == 0) GiveGold();
+    if (step.id % 20 == 0) GiveGold();
     foreach (Unit unit in this.units) unit.Act();
     this.CleanupUnits();
     this.step++;
@@ -71,9 +73,17 @@ public class Game
       .ForEach(unit => unit.target = player.enemy.playerBase.position);
   }
 
+  public void BuyWorker(Player player)
+  {
+    var cost = Game.WORKER_COST * player.workers;
+    if (player.gold < cost) return;
+    player.gold -= cost;
+    player.workers += 1;
+  }
+
   void GiveGold()
   {
-    this.players.ForEach(player => player.gold += 10);
+    this.players.ForEach(player => player.gold += player.workers * 10);
   }
 
   void Spawn()

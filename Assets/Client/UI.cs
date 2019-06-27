@@ -10,6 +10,7 @@ public class UI : MonoBehaviour
   public GameObject cameraRig;
   public Slider cameraSlider;
   public Text goldText;
+  public Text buyWorkerText;
   public float cameraMaxX = 170f;
   // Start is called before the first frame update
   void Start()
@@ -21,7 +22,9 @@ public class UI : MonoBehaviour
   {
     if (this.gameComponent.game != null)
     {
-      this.goldText.text = "(G) " + this.gameComponent.player.gold;
+      var player = this.gameComponent.player;
+      this.goldText.text = "(G) " + player.gold + " +" + (player.workers * 10) + "/s";
+      this.buyWorkerText.text = "Buy Worker (" + (player.workers * Game.WORKER_COST) + ")";
     }
   }
 
