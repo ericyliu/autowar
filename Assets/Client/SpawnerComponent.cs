@@ -20,7 +20,7 @@ public class SpawnerComponent : MonoBehaviour
     unitObject.name = unit.id + ": " + unit.type;
     UnitComponent unitComponent = unitObject.GetComponent<UnitComponent>();
     unitComponent.unit = unit;
-    unitComponent.SetTeamColor();
+    unitComponent.Initialize();
     return unitComponent;
   }
 }

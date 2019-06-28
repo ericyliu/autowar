@@ -8,7 +8,7 @@ public class UnitComponent : MonoBehaviour
   public Animator animator;
   public Unit unit;
 
-  public void SetTeamColor()
+  public void Initialize()
   {
     var renderer = this.teamColorObject.GetComponent<Renderer>();
     var color = unit.player.id == 0 ? Color.red : Color.blue;
@@ -17,6 +17,7 @@ public class UnitComponent : MonoBehaviour
 
   void Update()
   {
+    this.transform.localScale = new Vector3(1, 1, 1) * ((this.unit.player.upgrade * .1f) + 1);
     this.MoveAndRotate();
     this.PlayAnimation();
   }
