@@ -123,13 +123,14 @@ public class Game
   void Spawn()
   {
     this.players.ForEach(player =>
-    {
       player.spawns.ForEach(spawn =>
-      {
-        Unit soldier = this.spawner.SpawnSoldier(player, spawn);
-        soldier.target = player.enemy.playerBase.position;
-      });
-    });
+        player.unitsToSpawn.ForEach(type =>
+        {
+          Unit unit = this.spawner.SpawnUnit(player, spawn, type);
+          unit.target = player.enemy.playerBase.position;
+        })
+      )
+    );
   }
 
   void CleanupUnits()

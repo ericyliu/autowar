@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +11,20 @@ public class Spawner
   {
     this.game = game;
   }
-  public Unit SpawnBase(Player player, Vector2 position)
+
+  public Unit SpawnUnit(Player player, Vector2 position, UnitType type)
+  {
+    switch (type)
+    {
+      case UnitType.Base:
+        return this.SpawnBase(player, position);
+      case UnitType.Soldier:
+        return this.SpawnSoldier(player, position);
+    }
+    throw new Exception("unit type " + type + " not defined in spawner");
+  }
+
+  Unit SpawnBase(Player player, Vector2 position)
   {
     var unit = this.Spawn(UnitType.Base, player, position);
     unit.speed = 0f;
@@ -20,7 +34,7 @@ public class Spawner
     return unit;
   }
 
-  public Unit SpawnSoldier(Player player, Vector2 position)
+  Unit SpawnSoldier(Player player, Vector2 position)
   {
     var unit = this.Spawn(UnitType.Soldier, player, position);
     unit.speed = 3f;
