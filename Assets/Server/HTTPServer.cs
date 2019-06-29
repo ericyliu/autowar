@@ -20,7 +20,7 @@ public class HttpServer
   {
     this.listener = new HttpListener();
     // Add the prefixes.
-    this.listener.Prefixes.Add(Server.localhost ? "http://localhost:8080/" : "http://34.74.40.215:8080/");
+    this.listener.Prefixes.Add("http://*:8080/");
     this.listener.Start();
     Console.WriteLine("HTTP Server started");
     // Note: The GetContext method blocks while waiting for a request.
