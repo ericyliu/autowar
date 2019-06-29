@@ -103,7 +103,7 @@ public class UI : MonoBehaviour
     this.goldText.text = player.gold + "g +" + (player.workers * 10) + "g/s";
     this.upgradeText.text = "Upgrade Level: " + player.upgrade;
     this.buyWorkerButton.interactable = player.gold >= Game.GetBuyWorkerCost(player);
-    this.SetButtonText(this.buyWorkerButton, "Buy Worker (" + Game.GetBuyWorkerCost(player) + "g)");
+    this.SetButtonText(this.buyWorkerButton, "Add Income (" + Game.GetBuyWorkerCost(player) + "g)");
     this.upgradeButton.interactable = player.gold >= Game.GetUpgradeCost(player);
     this.SetButtonText(this.upgradeButton, "Upgrade (" + Game.GetUpgradeCost(player) + "g)");
     if (player.nukes <= 0) nukeButton.gameObject.SetActive(false);
