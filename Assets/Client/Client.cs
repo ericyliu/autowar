@@ -46,11 +46,7 @@ public class Client : MonoBehaviour
       this.socket.Shutdown(SocketShutdown.Both);
       this.socket.Close();
     }
-    if (this.server != null && this.server.listener != null)
-    {
-      this.server.listener.Shutdown(SocketShutdown.Both);
-      this.server.listener.Close();
-    }
+    if (this.server != null) server.Stop();
   }
 
   IEnumerator Connect()

@@ -103,6 +103,11 @@ public class Game
     return step;
   }
 
+  public override string ToString()
+  {
+    return "Turn: " + this.step;
+  }
+
   void BuyWorker(Player player)
   {
     var cost = Game.GetBuyWorkerCost(player);

@@ -1,10 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using UnityEngine;
 
 public class Server
 {
@@ -30,14 +28,27 @@ public class Server
 
   public Socket listener;
   List<PlayerHandler> playerHandlers = new List<PlayerHandler>();
-  List<GameWebObject> gameWebObjects = new List<GameWebObject>();
+  public List<GameWebObject> gameWebObjects = new List<GameWebObject>();
   int port = 11000;
-  int nextId = 0;
+  int nextGameId = 0;
+  int nextPlayerId = 0;
+  public List<Thread> threads = new List<Thread>();
 
   public void Start()
   {
-    new Thread(this.PruneGameWebObjects).Start();
-    new Thread(() => this.ReceiveConnection()).Start();
+    this.threads.Add(new Thread(() => new HttpServer(this).Start()));
+    this.threads.Add(new Thread(this.PruneGameWebObjects));
+    this.threads.Add(new Thread(() => this.ReceiveConnection()));
+    this.threads.ForEach(thread => thread.Start());
+  }
+
+  public void Stop()
+  {
+    if (this.listener != null)
+    {
+      this.listener.Close();
+    }
+    this.threads.ForEach(thread => thread.Abort());
   }
 
   void PruneGameWebObjects()
@@ -70,7 +81,7 @@ public class Server
   {
     while (true)
     {
-      var playerHandler = new PlayerHandler(this.nextId++, listener.Accept());
+      var playerHandler = new PlayerHandler(this.nextPlayerId++, listener.Accept());
       new Thread(() => this.ListenForActions(playerHandler)).Start();
     }
   }
@@ -81,7 +92,7 @@ public class Server
     try
     {
       this.playerHandlers.Add(playerHandler);
-      if (gameWebObjects.Count == 0) gameWebObjects.Add(new GameWebObject(playerHandler));
+      if (gameWebObjects.Count == 0) gameWebObjects.Add(new GameWebObject(this.nextGameId++, playerHandler));
       else gameWebObjects[0].playerHandlers.Add(playerHandler);
       var gameWebObject = this.gameWebObjects.Find(
         g => g.playerHandlers.IndexOf(playerHandler) > -1
@@ -115,17 +126,26 @@ public class PlayerHandler
     this.id = id;
     this.handler = handler;
   }
+
+  public override string ToString()
+  {
+    var address = ((Server.localhost ? this.handler.LocalEndPoint : this.handler.RemoteEndPoint) as IPEndPoint).Address;
+    var port = ((Server.localhost ? this.handler.LocalEndPoint : this.handler.RemoteEndPoint) as IPEndPoint).Port;
+    return this.id + "(" + (this.alive ? "alive" : "dead") + "): " + address + ":" + port;
+  }
 }
 
 public class GameWebObject
 {
+  public int id;
   public Game game = new Game();
   public List<PlayerHandler> playerHandlers = new List<PlayerHandler>();
   public Thread thread;
 
-  public GameWebObject(PlayerHandler playerHandler)
+  public GameWebObject(int id, PlayerHandler playerHandler)
   {
     Console.WriteLine("Starting game");
+    this.id = id;
     this.playerHandlers.Add(playerHandler);
     this.thread = new Thread(this.PublishSteps);
     this.thread.Start();
@@ -180,5 +200,15 @@ public class GameWebObject
       playerHandler.handler.Shutdown(SocketShutdown.Both);
       playerHandler.handler.Close();
     }
+  }
+
+  public override string ToString()
+  {
+    var str = "\nGame " + this.id + "\n-----------------------------\n";
+    str += "Players\n";
+    this.playerHandlers.ForEach(p => str += " - " + p.ToString() + "\n");
+    str += "\nState\n";
+    str += " - " + this.game.ToString() + "\n";
+    return str;
   }
 }
