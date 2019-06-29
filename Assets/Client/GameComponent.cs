@@ -65,7 +65,7 @@ public class GameComponent : MonoBehaviour
     }
     componentsToDelete.ForEach(id =>
     {
-      Destroy(this.unitComponents[id].gameObject);
+      GameObject.Destroy(this.unitComponents[id].gameObject);
       this.unitComponents.Remove(id);
     });
   }

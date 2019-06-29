@@ -3,6 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public class BuyUnitButton
+{
+  public Button button;
+  public UnitType type;
+
+  public BuyUnitButton(Button button, UnitType type)
+  {
+    this.button = button;
+    this.type = type;
+  }
+}
+
 public class UI : MonoBehaviour
 {
 
@@ -16,6 +28,8 @@ public class UI : MonoBehaviour
   public Button nukeButton;
   public Transform shopPanel;
   public Transform innerShopPanel;
+  public GameObject buyUnitButtonPrefab;
+  List<BuyUnitButton> buyUnitButtons = new List<BuyUnitButton>();
   public float cameraMaxX = 170f;
 
   public void LookAtBase(int id)
@@ -35,22 +49,36 @@ public class UI : MonoBehaviour
   public void OpenUnitShopRow(int slot)
   {
     this.CloseShop();
-    this.innerShopPanel
-      .GetChild(slot)
-      .Find("RowContainer")
-      .gameObject
-      .SetActive(true);
+    var row = this.innerShopPanel.GetChild(slot).Find("RowContainer");
+    var buyableUnitList = row.Find("Units");
+    Game.GetBuyableUnits().ForEach(type =>
+    {
+      if (type == this.gameComponent.player.unitsToSpawn[slot]) return;
+      var button = Instantiate(this.buyUnitButtonPrefab, buyableUnitList).GetComponent<Button>();
+      button.onClick.AddListener(() => this.BuyUnit(slot, type));
+      button.interactable = this.gameComponent.player.gold >= Game.GetBuyUnitCost(type);
+      this.SetButtonText(button, type.ToString() + " (" + Game.GetBuyUnitCost(type) + ")");
+      this.buyUnitButtons.Add(new BuyUnitButton(button, type));
+    });
+    row.gameObject.SetActive(true);
   }
 
   public void CloseShop()
   {
     for (int i = 0; i < this.innerShopPanel.childCount; i++)
     {
-      this.innerShopPanel
+      var row = this.innerShopPanel
         .GetChild(i)
-        .Find("RowContainer")
+        .Find("RowContainer");
+      row
         .gameObject
         .SetActive(false);
+      var buyableUnitList = row.Find("Units");
+      for (int j = 0; j < buyableUnitList.childCount; j++)
+      {
+        GameObject.Destroy(buyableUnitList.GetChild(j).gameObject);
+      }
+      this.buyUnitButtons.Clear();
     }
   }
 
@@ -84,16 +112,24 @@ public class UI : MonoBehaviour
 
   void UpdateShopUI()
   {
-    var unitsToSpawn = this.gameComponent.player.unitsToSpawn;
-    for (int i = 0; i < unitsToSpawn.Count; i++)
+    var player = this.gameComponent.player;
+    var unitsToSpawn = player.unitsToSpawn;
+    for (int i = 0; i < Player.UNIT_SLOTS; i++)
     {
-      Transform buttonTransform = this.shopPanel.Find("Unit " + i);
-      if (buttonTransform != null)
+      Transform buttonTransform = this.shopPanel.GetChild(i);
+      if (buttonTransform != null && unitsToSpawn[i] != UnitType.Null)
       {
         SetButtonText(buttonTransform.GetComponent<Button>(), unitsToSpawn[i].ToString());
         (buttonTransform as RectTransform).sizeDelta = new Vector2(160, 50);
       }
     }
+    this.buyUnitButtons.ForEach(bub => bub.button.interactable = player.gold >= Game.GetBuyUnitCost(bub.type));
+  }
+
+  void BuyUnit(int slot, UnitType type)
+  {
+    this.CloseShop();
+    gameComponent.BuyUnit(slot, type);
   }
 
   void SetButtonText(Button button, string text)

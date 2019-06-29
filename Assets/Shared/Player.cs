@@ -3,9 +3,10 @@ using UnityEngine;
 
 public class Player
 {
+  public static int UNIT_SLOTS = 4;
   public int id;
   public List<Vector2> spawns = new List<Vector2>();
-  public List<UnitType> unitsToSpawn = new List<UnitType>();
+  public UnitType[] unitsToSpawn = new UnitType[Player.UNIT_SLOTS];
   public Vector2 spawnTarget = new Vector2(15f, 13f);
   public Unit playerBase;
   public Game game;
@@ -28,7 +29,7 @@ public class Player
     this.playerBase = game.spawner.SpawnUnit(this, baseLocation, UnitType.Base);
     this.spawns = spawns;
     this.spawnTarget = spawnTarget;
-    this.unitsToSpawn.Add(UnitType.Soldier);
+    this.unitsToSpawn[0] = UnitType.Soldier;
   }
 
 }

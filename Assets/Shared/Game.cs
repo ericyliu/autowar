@@ -14,9 +14,16 @@ public class Game
     return Game.WORKER_COST * player.workers;
   }
 
+  public static List<UnitType> GetBuyableUnits()
+  {
+    return new List<UnitType>(){
+      UnitType.Soldier
+    };
+  }
+
   public static int GetBuyUnitCost(UnitType type)
   {
-    return 100;
+    return 500;
   }
 
   public static int GetUpgradeCost(Player player)
@@ -106,6 +113,7 @@ public class Game
 
   void BuyUnit(GameAction action)
   {
+    if (action.slot > Player.UNIT_SLOTS - 1) return;
     var player = action.player;
     var cost = Game.GetBuyUnitCost(action.unitType);
     if (player.gold < cost) return;
@@ -141,10 +149,13 @@ public class Game
   {
     this.players.ForEach(player =>
       player.spawns.ForEach(spawn =>
-        player.unitsToSpawn.ForEach(type =>
+        Array.ForEach(player.unitsToSpawn, type =>
         {
-          Unit unit = this.spawner.SpawnUnit(player, spawn, type);
-          unit.target = player.enemy.playerBase.position;
+          if (type != UnitType.Null)
+          {
+            Unit unit = this.spawner.SpawnUnit(player, spawn, type);
+            unit.target = player.enemy.playerBase.position;
+          }
         })
       )
     );

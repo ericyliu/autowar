@@ -436,7 +436,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &88920330
 MonoBehaviour:
@@ -453,7 +453,7 @@ MonoBehaviour:
   client: {fileID: 88920331}
   spawnerComponent: {fileID: 88920332}
   id: 0
-  ui: {fileID: 608676036}
+  ui: {fileID: 1123469737}
 --- !u!114 &88920331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1636,7 +1636,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 608676036}
+      - m_Target: {fileID: 1123469737}
         m_MethodName: CloseShop
         m_Mode: 1
         m_Arguments:
@@ -2113,7 +2113,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 608676036}
+      - m_Target: {fileID: 1123469737}
         m_MethodName: CloseShop
         m_Mode: 1
         m_Arguments:
@@ -2932,7 +2932,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 608676036}
+      - m_Target: {fileID: 1123469737}
         m_MethodName: OpenUnitShopRow
         m_Mode: 3
         m_Arguments:
@@ -3178,7 +3178,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 608676035}
-  - component: {fileID: 608676036}
   m_Layer: 0
   m_Name: CameraRig
   m_TagString: Untagged
@@ -3198,33 +3197,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 963194228}
-  - {fileID: 1123469733}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &608676036
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 608676034}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b382dae3a94fde45afab9d60729359b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameComponent: {fileID: 88920330}
-  cameraRig: {fileID: 608676034}
-  cameraSlider: {fileID: 1552616412}
-  goldText: {fileID: 717076010}
-  upgradeText: {fileID: 995532228}
-  buyWorkerButton: {fileID: 221781483}
-  upgradeButton: {fileID: 1199616561}
-  nukeButton: {fileID: 941589888}
-  shopPanel: {fileID: 675976964}
-  innerShopPanel: {fileID: 820396256}
-  cameraMaxX: 170
 --- !u!1 &629804641
 GameObject:
   m_ObjectHideFlags: 0
@@ -3718,7 +3693,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &712344038
 GameObject:
@@ -4160,7 +4135,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 608676036}
+      - m_Target: {fileID: 1123469737}
         m_MethodName: OpenUnitShopRow
         m_Mode: 3
         m_Arguments:
@@ -4372,7 +4347,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 608676036}
+      - m_Target: {fileID: 1123469737}
         m_MethodName: CloseShop
         m_Mode: 1
         m_Arguments:
@@ -4561,7 +4536,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &836012302
 GameObject:
@@ -4800,7 +4775,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 608676036}
+      - m_Target: {fileID: 1123469737}
         m_MethodName: OpenUnitShopRow
         m_Mode: 3
         m_Arguments:
@@ -5278,7 +5253,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 608676036}
+      - m_Target: {fileID: 1123469737}
         m_MethodName: OpenUnitShopRow
         m_Mode: 3
         m_Arguments:
@@ -5867,8 +5842,9 @@ GameObject:
   - component: {fileID: 1123469736}
   - component: {fileID: 1123469735}
   - component: {fileID: 1123469734}
+  - component: {fileID: 1123469737}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5891,7 +5867,7 @@ RectTransform:
   - {fileID: 1406825108}
   - {fileID: 675976964}
   - {fileID: 820396256}
-  m_Father: {fileID: 608676035}
+  m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -5959,6 +5935,31 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1123469737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1123469732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b382dae3a94fde45afab9d60729359b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameComponent: {fileID: 88920330}
+  cameraRig: {fileID: 608676034}
+  cameraSlider: {fileID: 1552616412}
+  goldText: {fileID: 717076010}
+  upgradeText: {fileID: 995532228}
+  buyWorkerButton: {fileID: 221781483}
+  upgradeButton: {fileID: 1199616561}
+  nukeButton: {fileID: 941589888}
+  shopPanel: {fileID: 675976964}
+  innerShopPanel: {fileID: 820396256}
+  buyUnitButtonPrefab: {fileID: 5075917407841171705, guid: b8cc7002980598147a28c39681f14d4e,
+    type: 3}
+  cameraMaxX: 170
 --- !u!1 &1140888423
 GameObject:
   m_ObjectHideFlags: 0
@@ -6553,7 +6554,7 @@ Transform:
   - {fileID: 24957558}
   - {fileID: 591585708}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1318182797
 GameObject:
@@ -7965,7 +7966,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 608676036}
+      - m_Target: {fileID: 1123469737}
         m_MethodName: CloseShop
         m_Mode: 1
         m_Arguments:

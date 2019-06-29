@@ -1,9 +1,10 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public enum UnitType
 {
+  Null,
   Base,
   Soldier
 }
@@ -28,6 +29,7 @@ public class Unit
 
   public Unit(int id, UnitType type, Player player, Vector2 position)
   {
+    if (type == UnitType.Null) throw new Exception("Unit type cannot be null");
     this.id = id;
     this.type = type;
     this.player = player;
