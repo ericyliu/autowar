@@ -3586,6 +3586,7 @@ MonoBehaviour:
   buyWorkerButton: {fileID: 221781483}
   upgradeButton: {fileID: 1199616561}
   nukeButton: {fileID: 941589888}
+  shopPanel: {fileID: 675976964}
   cameraMaxX: 170
 --- !u!1 &629804641
 GameObject:
@@ -3817,7 +3818,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 0
+  m_ChildAlignment: 2
   m_Spacing: 20
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0

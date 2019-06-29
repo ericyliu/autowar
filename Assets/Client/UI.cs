@@ -14,6 +14,7 @@ public class UI : MonoBehaviour
   public Button buyWorkerButton;
   public Button upgradeButton;
   public Button nukeButton;
+  public Transform shopPanel;
   public float cameraMaxX = 170f;
 
   public void LookAtBase(int id)
@@ -59,7 +60,16 @@ public class UI : MonoBehaviour
 
   void UpdateShopUI()
   {
-
+    var unitsToSpawn = this.gameComponent.player.unitsToSpawn;
+    for (int i = 0; i < unitsToSpawn.Count; i++)
+    {
+      Transform buttonTransform = this.shopPanel.Find("Unit " + i);
+      if (buttonTransform != null)
+      {
+        SetButtonText(buttonTransform.GetComponent<Button>(), unitsToSpawn[i].ToString());
+        (buttonTransform as RectTransform).sizeDelta = new Vector2(160, 50);
+      }
+    }
   }
 
   void SetButtonText(Button button, string text)
