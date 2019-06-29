@@ -11,30 +11,10 @@ public class UI : MonoBehaviour
   public Slider cameraSlider;
   public Text goldText;
   public Text upgradeText;
-  public Text buyWorkerText;
-  public Text upgradeButtonText;
-  public GameObject nukeButton;
-  public Text nukeText;
+  public Button buyWorkerButton;
+  public Button upgradeButton;
+  public Button nukeButton;
   public float cameraMaxX = 170f;
-  // Start is called before the first frame update
-  void Start()
-  {
-    cameraSlider.onValueChanged.AddListener(delegate { OnSliderChange(); });
-  }
-
-  void Update()
-  {
-    if (this.gameComponent.game != null)
-    {
-      var player = this.gameComponent.player;
-      this.goldText.text = player.gold + "g +" + (player.workers * 10) + "g/s";
-      this.upgradeText.text = "Upgrade Level: " + player.upgrade;
-      this.buyWorkerText.text = "Buy Worker (" + Game.GetBuyWorkerCost(player) + "g)";
-      this.upgradeButtonText.text = "Upgrade (" + Game.GetUpgradeCost(player) + "g)";
-      this.nukeText.text = "Nuke (" + player.nukes + ")";
-      if (player.nukes <= 0) nukeButton.SetActive(false);
-    }
-  }
 
   public void LookAtBase(int id)
   {
@@ -48,5 +28,42 @@ public class UI : MonoBehaviour
       cameraRig.transform.position.y,
       cameraRig.transform.position.z
     );
+  }
+
+  void Start()
+  {
+    cameraSlider.onValueChanged.AddListener(delegate { OnSliderChange(); });
+  }
+
+  void Update()
+  {
+    if (this.gameComponent.game != null)
+    {
+      this.UpdateMiscUI();
+      this.UpdateShopUI();
+    }
+  }
+
+  void UpdateMiscUI()
+  {
+    var player = this.gameComponent.player;
+    this.goldText.text = player.gold + "g +" + (player.workers * 10) + "g/s";
+    this.upgradeText.text = "Upgrade Level: " + player.upgrade;
+    this.buyWorkerButton.interactable = player.gold >= Game.GetBuyWorkerCost(player);
+    this.SetButtonText(this.buyWorkerButton, "Buy Worker (" + Game.GetBuyWorkerCost(player) + "g)");
+    this.upgradeButton.interactable = player.gold >= Game.GetUpgradeCost(player);
+    this.SetButtonText(this.upgradeButton, "Upgrade (" + Game.GetUpgradeCost(player) + "g)");
+    if (player.nukes <= 0) nukeButton.gameObject.SetActive(false);
+    this.SetButtonText(this.nukeButton, "Nuke (" + player.nukes + ")");
+  }
+
+  void UpdateShopUI()
+  {
+
+  }
+
+  void SetButtonText(Button button, string text)
+  {
+    button.gameObject.GetComponentInChildren<Text>().text = text;
   }
 }
