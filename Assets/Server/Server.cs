@@ -28,6 +28,7 @@ public class Server
     return true;
   }
 
+  public Socket listener;
   List<PlayerHandler> playerHandlers = new List<PlayerHandler>();
   List<GameWebObject> gameWebObjects = new List<GameWebObject>();
   int port = 11000;
@@ -59,10 +60,10 @@ public class Server
     IPAddress ipAddress = host.AddressList[0];
     IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
     Console.WriteLine("Starting the server on port: " + port);
-    Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-    listener.Bind(localEndPoint);
-    listener.Listen(10);
-    this.ReceiveConnections(listener);
+    this.listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+    this.listener.Bind(localEndPoint);
+    this.listener.Listen(10);
+    this.ReceiveConnections(this.listener);
   }
 
   void ReceiveConnections(Socket listener)
@@ -87,7 +88,7 @@ public class Server
       );
       while (playerHandler != null)
       {
-        byte[] bytes = new byte[2];
+        byte[] bytes = new byte[GameAction.BYTE_ARRAY_SIZE];
         playerHandler.handler.Receive(bytes);
         gameWebObject.game.actions.Add(new GameAction(bytes, gameWebObject.game));
       }

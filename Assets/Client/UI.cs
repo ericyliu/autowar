@@ -15,6 +15,7 @@ public class UI : MonoBehaviour
   public Button upgradeButton;
   public Button nukeButton;
   public Transform shopPanel;
+  public Transform innerShopPanel;
   public float cameraMaxX = 170f;
 
   public void LookAtBase(int id)
@@ -31,9 +32,32 @@ public class UI : MonoBehaviour
     );
   }
 
+  public void OpenUnitShopRow(int slot)
+  {
+    this.CloseShop();
+    this.innerShopPanel
+      .GetChild(slot)
+      .Find("RowContainer")
+      .gameObject
+      .SetActive(true);
+  }
+
+  public void CloseShop()
+  {
+    for (int i = 0; i < this.innerShopPanel.childCount; i++)
+    {
+      this.innerShopPanel
+        .GetChild(i)
+        .Find("RowContainer")
+        .gameObject
+        .SetActive(false);
+    }
+  }
+
   void Start()
   {
     cameraSlider.onValueChanged.AddListener(delegate { OnSliderChange(); });
+    this.CloseShop();
   }
 
   void Update()

@@ -29,6 +29,11 @@ public class GameComponent : MonoBehaviour
     this.client.Send(GameAction.CreateNukeAction(this.player));
   }
 
+  public void BuyUnit(int slot, UnitType type)
+  {
+    this.client.Send(GameAction.CreateBuyUnitAction(this.player, slot, type));
+  }
+
   void Start()
   {
     this.ui.LookAtBase(this.id);

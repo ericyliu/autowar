@@ -14,6 +14,11 @@ public class Game
     return Game.WORKER_COST * player.workers;
   }
 
+  public static int GetBuyUnitCost(UnitType type)
+  {
+    return 100;
+  }
+
   public static int GetUpgradeCost(Player player)
   {
     return Game.UPGRADE_COST * (player.upgrade + 1);
@@ -72,6 +77,9 @@ public class Game
         case GameActionType.BuyWorker:
           BuyWorker(action.player);
           break;
+        case GameActionType.BuyUnit:
+          BuyUnit(action);
+          break;
         case GameActionType.Upgrade:
           Upgrade(action.player);
           break;
@@ -94,6 +102,15 @@ public class Game
     if (player.gold < cost) return;
     player.gold -= cost;
     player.workers++;
+  }
+
+  void BuyUnit(GameAction action)
+  {
+    var player = action.player;
+    var cost = Game.GetBuyUnitCost(action.unitType);
+    if (player.gold < cost) return;
+    player.gold -= cost;
+    player.unitsToSpawn[action.slot] = action.unitType;
   }
 
   void Upgrade(Player player)

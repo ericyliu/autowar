@@ -17,6 +17,7 @@ public class Client : MonoBehaviour
   public ServerOption serverOption = ServerOption.Self;
   public Socket socket;
   public Game game;
+  public Server server;
 
   public void Send(GameAction action)
   {
@@ -29,8 +30,8 @@ public class Client : MonoBehaviour
     if (this.serverOption == ServerOption.Self)
     {
       Server.localhost = true;
-      Server server = new Server();
-      server.Start();
+      this.server = new Server();
+      this.server.Start();
     }
     this.game = new Game();
     this.gameComponent.game = this.game;
@@ -44,6 +45,11 @@ public class Client : MonoBehaviour
     {
       this.socket.Shutdown(SocketShutdown.Both);
       this.socket.Close();
+    }
+    if (this.server != null && this.server.listener != null)
+    {
+      this.server.listener.Shutdown(SocketShutdown.Both);
+      this.server.listener.Close();
     }
   }
 
