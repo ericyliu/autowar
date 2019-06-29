@@ -19,7 +19,10 @@ public class UI : MonoBehaviour
 {
 
   public GameComponent gameComponent;
+  public Client client;
   public GameObject cameraRig;
+  public GameObject startMenu;
+  public GameObject gameMenu;
   public Slider cameraSlider;
   public Text goldText;
   public Text upgradeText;
@@ -31,6 +34,23 @@ public class UI : MonoBehaviour
   public GameObject buyUnitButtonPrefab;
   List<BuyUnitButton> buyUnitButtons = new List<BuyUnitButton>();
   public float cameraMaxX = 170f;
+
+  public void ShowStartMenu()
+  {
+    this.gameMenu.SetActive(false);
+    this.startMenu.SetActive(true);
+  }
+
+  public void JoinServer()
+  {
+    this.client.JoinServer(int.Parse(this.startMenu.GetComponentInChildren<InputField>().text));
+  }
+
+  public void ShowGameMenu()
+  {
+    this.gameMenu.SetActive(true);
+    this.startMenu.SetActive(false);
+  }
 
   public void LookAtBase(int id)
   {

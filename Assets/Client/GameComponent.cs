@@ -34,13 +34,9 @@ public class GameComponent : MonoBehaviour
     this.client.Send(GameAction.CreateBuyUnitAction(this.player, slot, type));
   }
 
-  void Start()
-  {
-    this.ui.LookAtBase(this.id);
-  }
-
   void Update()
   {
+    if (this.game == null) return;
     this.StepGame();
     this.DespawnUnits();
     this.SpawnUnits();

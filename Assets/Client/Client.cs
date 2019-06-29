@@ -14,10 +14,22 @@ public enum ServerOption
 public class Client : MonoBehaviour
 {
   public GameComponent gameComponent;
+  public UI ui;
   public ServerOption serverOption = ServerOption.Self;
   public Socket socket;
   public Game game;
   public Server server;
+
+  public void JoinServer(int id)
+  {
+    if (id != 0 && id != 1) return;
+    this.game = new Game();
+    this.gameComponent.game = this.game;
+    this.gameComponent.player = this.game.players[id];
+    this.ui.ShowGameMenu();
+    this.ui.LookAtBase(id);
+    StartCoroutine(this.Connect());
+  }
 
   public void Send(GameAction action)
   {
@@ -27,16 +39,9 @@ public class Client : MonoBehaviour
 
   void Start()
   {
-    if (this.serverOption == ServerOption.Self)
-    {
-      Server.localhost = true;
-      this.server = new Server();
-      this.server.Start();
-    }
-    this.game = new Game();
-    this.gameComponent.game = this.game;
-    this.gameComponent.player = this.game.players[this.gameComponent.id];
-    StartCoroutine(this.Connect());
+    if (this.serverOption == ServerOption.Self) this.StartServer();
+    if (this.serverOption == ServerOption.Hosted) this.ui.ShowStartMenu();
+    else this.JoinServer(this.gameComponent.id);
   }
 
   void OnApplicationQuit()
@@ -47,6 +52,13 @@ public class Client : MonoBehaviour
       this.socket.Close();
     }
     if (this.server != null) server.Stop();
+  }
+
+  void StartServer()
+  {
+    Server.localhost = true;
+    this.server = new Server();
+    this.server.Start();
   }
 
   IEnumerator Connect()
