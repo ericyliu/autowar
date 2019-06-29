@@ -43,7 +43,8 @@ public class UI : MonoBehaviour
 
   public void JoinServer()
   {
-    this.client.JoinServer(int.Parse(this.startMenu.GetComponentInChildren<InputField>().text));
+    var idText = this.startMenu.GetComponentInChildren<InputField>().text;
+    this.client.JoinServer(idText == "" ? 0 : int.Parse(idText));
   }
 
   public void ShowGameMenu()
