@@ -24,6 +24,7 @@ public class UI : MonoBehaviour
   public GameObject startMenu;
   public GameObject gameMenu;
   public Slider cameraSlider;
+  public Slider lineOfWarSlider;
   public Text goldText;
   public Text upgradeText;
   public Button buyWorkerButton;
@@ -115,6 +116,7 @@ public class UI : MonoBehaviour
     {
       this.UpdateMiscUI();
       this.UpdateShopUI();
+      this.UpdateLineOfWarSlider();
     }
   }
 
@@ -151,6 +153,31 @@ public class UI : MonoBehaviour
   {
     this.CloseShop();
     gameComponent.BuyUnit(slot, type);
+  }
+
+  void UpdateLineOfWarSlider()
+  {
+    Unit furthestPlayer0 = null;
+    Unit furthestPlayer1 = null;
+    this.gameComponent.game.units.ForEach(unit =>
+    {
+      if (unit.player == null) return;
+      if (unit.player.id == 0 &&
+        (furthestPlayer0 == null ||
+        furthestPlayer0.position.x < unit.position.x))
+      {
+        furthestPlayer0 = unit;
+      }
+      else if (unit.player.id == 1 &&
+        (furthestPlayer1 == null ||
+        furthestPlayer1.position.x > unit.position.x))
+      {
+        furthestPlayer1 = unit;
+      }
+    });
+    if (furthestPlayer0 == null || furthestPlayer1 == null) return;
+    this.lineOfWarSlider.value = (furthestPlayer0.position.x + furthestPlayer1.position.x) / 2f / (this.cameraMaxX + 30f);
+
   }
 
   void SetButtonText(Button button, string text)
