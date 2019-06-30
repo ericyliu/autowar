@@ -468,7 +468,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameComponent: {fileID: 88920330}
   ui: {fileID: 1123469737}
-  serverOption: 2
+  serverOption: 0
 --- !u!114 &88920332
 MonoBehaviour:
   m_ObjectHideFlags: 0

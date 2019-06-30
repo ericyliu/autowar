@@ -56,6 +56,7 @@ public class Client : MonoBehaviour
 
   void StartServer()
   {
+    Debug.Log("Starting Server");
     Server.localhost = true;
     this.server = new Server();
     this.server.Start();
@@ -74,7 +75,7 @@ public class Client : MonoBehaviour
 
     try
     {
-      Debug.Log("Connecting to server...");
+      Debug.Log("Connecting to " + (this.serverOption == ServerOption.Hosted ? "remote" : "local") + " server");
       this.socket.Connect(remoteEp);
       Debug.Log("Successfully connected to server");
       StartCoroutine(this.ReceiveGameSteps());
