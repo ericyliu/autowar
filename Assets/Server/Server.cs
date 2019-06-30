@@ -108,7 +108,6 @@ public class Server
     {
       if (Server.DidPlayerDisconnect(playerHandler, e)) return;
       Console.WriteLine(e);
-      playerHandler.handler.Shutdown(SocketShutdown.Both);
       playerHandler.handler.Close();
     }
   }
@@ -197,7 +196,6 @@ public class GameWebObject
       Console.WriteLine("player disconnected: " + playerHandler.id);
       if (Server.DidPlayerDisconnect(playerHandler, e)) return;
       Console.WriteLine(e.GetType());
-      playerHandler.handler.Shutdown(SocketShutdown.Both);
       playerHandler.handler.Close();
     }
   }
