@@ -49,6 +49,9 @@ public class Spawner
     unit.speed = 2.5f;
     unit.health = 60;
     unit.attackRange = 8f;
+    unit.damage = 30;
+    unit.attackSpeed = 35;
+    unit.attackDamageDelay = 23;
     return unit;
   }
 

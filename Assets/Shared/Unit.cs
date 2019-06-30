@@ -18,15 +18,19 @@ public class Unit
   public Vector2 target;
   public Unit attackTarget;
   public float attackRange = 1f;
+  public float attackSpeed = 25;
+  public float attackDamageDelay = 18;
   public float aggroRadius = 10f;
   public float speed = 3f;
   public float size = 1.5f;
   public float height = 1f;
   public int health = 100;
-  public int damage = 1;
+  public int damage = 20;
   public Game game;
   public Player player;
   public bool attacking = false;
+  public List<Action> onAttack = new List<Action>();
+  int lastAttackedStep = 0;
 
   public Unit(int id, UnitType type, Player player, Vector2 position)
   {
@@ -50,10 +54,24 @@ public class Unit
   {
     if (this.attackTarget != null && this.attackTarget.health <= 0) this.attackTarget = null;
     if (this.attackTarget == null || this.attackTarget.health <= 0) this.GetAttackTarget();
-    if (this.attackTarget == null) return false;
-    if (this.GetDistanceAway(this.attackTarget) > this.attackRange) return false;
+    if (
+      this.attackTarget == null ||
+      this.GetDistanceAway(this.attackTarget) > this.attackRange
+    )
+    {
+      this.lastAttackedStep = 0;
+      return false;
+    }
     this.attacking = true;
-    this.attackTarget.health -= this.damage + this.player.upgrade;
+    if (this.game.step > this.lastAttackedStep + this.attackSpeed)
+    {
+      this.onAttack.ForEach(fn => fn());
+      this.lastAttackedStep = this.game.step;
+    }
+    if (this.game.step == this.lastAttackedStep + this.attackDamageDelay)
+    {
+      this.attackTarget.health -= this.damage + (this.player.upgrade * 20);
+    }
     return true;
   }
 
