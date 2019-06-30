@@ -168,9 +168,9 @@ public class GameWebObject
     }
     catch (Exception e)
     {
+      Console.WriteLine(e);
       Console.WriteLine("Closing game");
       if (Server.DidThreadAbort(e)) return;
-      Console.WriteLine(e);
     }
   }
 

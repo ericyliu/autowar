@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Spawner
@@ -14,16 +13,25 @@ public class Spawner
 
   public Unit SpawnUnit(Player player, Vector2 position, UnitType type)
   {
+    Unit unit = null;
     switch (type)
     {
       case UnitType.Base:
-        return this.SpawnBase(player, position);
+        unit = this.SpawnBase(player, position);
+        break;
       case UnitType.Soldier:
-        return this.SpawnSoldier(player, position);
+        unit = this.SpawnSoldier(player, position);
+        break;
       case UnitType.Archer:
-        return this.SpawnArcher(player, position);
+        unit = this.SpawnArcher(player, position);
+        break;
+      case UnitType.Priest:
+        unit = this.SpawnPriest(player, position);
+        break;
     }
-    throw new Exception("unit type " + type + " not defined in spawner");
+    if (unit == null) throw new Exception("unit type " + type + " not defined in spawner");
+    unit.Initialize();
+    return unit;
   }
 
   Unit SpawnBase(Player player, Vector2 position)
@@ -32,7 +40,7 @@ public class Spawner
     unit.speed = 0f;
     unit.size = 4.5f;
     unit.height = 2.4f;
-    unit.health = 1000;
+    unit.maxHealth = 1000;
     return unit;
   }
 
@@ -47,11 +55,56 @@ public class Spawner
   {
     var unit = this.Spawn(UnitType.Archer, player, position);
     unit.speed = 2.5f;
-    unit.health = 60;
+    unit.maxHealth = 60;
     unit.attackRange = 8f;
     unit.damage = 30;
     unit.attackSpeed = 35;
     unit.attackDamageDelay = 23;
+    return unit;
+  }
+
+  Unit SpawnPriest(Player player, Vector2 position)
+  {
+    var unit = this.Spawn(UnitType.Priest, player, position);
+    unit.speed = 2.5f;
+    unit.maxHealth = 50;
+    unit.attackRange = 9f;
+    unit.damage = 3;
+    unit.attackSpeed = 35;
+    unit.attackDamageDelay = 10;
+    unit.AcquireTargetOverride = thisUnit =>
+    {
+      if (
+        thisUnit.attackTarget == null ||
+        thisUnit.attackTarget.health >= thisUnit.attackTarget.maxHealth ||
+        thisUnit.attackTarget.health <= 0
+      )
+      {
+        var units = thisUnit
+          .GetUnitsWithin(thisUnit.aggroRadius)
+          .FindAll(u =>
+            u.player.id == thisUnit.player.id &&
+            u.health < u.maxHealth &&
+            u.health > 0
+          );
+        if (units.Count == 0) return false;
+        units
+          .Sort((unit1, unit2) =>
+          {
+            var unit1Closer =
+              Vector2.Distance(unit1.position, thisUnit.position) <=
+              Vector2.Distance(unit2.position, thisUnit.position);
+            if (unit1Closer) return -1;
+            else return 1;
+          });
+        thisUnit.attackTarget = units[0];
+      }
+      return thisUnit.attackTarget != null;
+    };
+    unit.DoDamageOverride = thisUnit =>
+    {
+      thisUnit.attackTarget.Heal(thisUnit.damage + (thisUnit.player.upgrade * 20));
+    };
     return unit;
   }
 

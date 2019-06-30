@@ -7,7 +7,8 @@ public enum UnitType
   Null,
   Base,
   Soldier,
-  Archer
+  Archer,
+  Priest
 }
 
 public class Unit
@@ -24,12 +25,15 @@ public class Unit
   public float speed = 3f;
   public float size = 1.5f;
   public float height = 1f;
+  public int maxHealth = 100;
   public int health = 100;
   public int damage = 20;
   public Game game;
   public Player player;
   public bool attacking = false;
   public List<Action> onAttack = new List<Action>();
+  public Action<Unit> DoDamageOverride;
+  public Func<Unit, bool> AcquireTargetOverride;
   int lastAttackedStep = 0;
 
   public Unit(int id, UnitType type, Player player, Vector2 position)
@@ -39,7 +43,12 @@ public class Unit
     this.type = type;
     this.player = player;
     this.position = position;
-    this.health = this.health + (this.player.upgrade * 10);
+  }
+
+  public void Initialize()
+  {
+    this.maxHealth = this.maxHealth + (this.player.upgrade * 10);
+    this.health = this.maxHealth;
   }
 
   public void Act()
@@ -50,18 +59,31 @@ public class Unit
     this.Move();
   }
 
+  public void TakeDamage(int damage)
+  {
+    Debug.Log(this.id + " Take damage " + damage);
+    this.health = Math.Max(0, this.health - damage);
+  }
+
+  public void Heal(int damage)
+  {
+    this.health = Math.Min(this.maxHealth, this.health + damage);
+  }
+
+  public List<Unit> GetUnitsWithin(float f)
+  {
+    return this.game.units.FindAll(unit =>
+      {
+        if (unit == this) return false;
+        return this.GetDistanceAway(unit) <= f;
+      }
+    );
+  }
+
   bool Attack()
   {
-    if (this.attackTarget != null && this.attackTarget.health <= 0) this.attackTarget = null;
-    if (this.attackTarget == null || this.attackTarget.health <= 0) this.GetAttackTarget();
-    if (
-      this.attackTarget == null ||
-      this.GetDistanceAway(this.attackTarget) > this.attackRange
-    )
-    {
-      this.lastAttackedStep = 0;
-      return false;
-    }
+    if (!this.AcquireTarget()) return false;
+    if (this.GetDistanceAway(this.attackTarget) > this.attackRange) return false;
     this.attacking = true;
     if (this.game.step > this.lastAttackedStep + this.attackSpeed)
     {
@@ -70,25 +92,35 @@ public class Unit
     }
     if (this.game.step == this.lastAttackedStep + this.attackDamageDelay)
     {
-      this.attackTarget.health -= this.damage + (this.player.upgrade * 20);
+      this.DoDamage();
     }
     return true;
   }
 
-  bool GetAttackTarget()
+  bool AcquireTarget()
   {
-    var units = this.GetUnitsWithin(this.aggroRadius)
-      .FindAll(unit => unit.player.id == this.player.enemy.id && unit.health > 0);
-    if (units.Count == 0) return false;
-    units
-      .Sort((unit1, unit2) =>
-      {
-        var unit1Closer = Vector2.Distance(unit1.position, this.position) <= Vector2.Distance(unit2.position, this.position);
-        if (unit1Closer) return -1;
-        else return 1;
-      });
-    this.attackTarget = units[0];
-    return true;
+    if (this.AcquireTargetOverride != null) return this.AcquireTargetOverride(this);
+    if (this.attackTarget == null || this.attackTarget.health <= 0)
+    {
+      var units = this.GetUnitsWithin(this.aggroRadius)
+        .FindAll(unit => unit.player.id == this.player.enemy.id && unit.health > 0);
+      if (units.Count == 0) return false;
+      units
+        .Sort((unit1, unit2) =>
+        {
+          var unit1Closer = Vector2.Distance(unit1.position, this.position) <= Vector2.Distance(unit2.position, this.position);
+          if (unit1Closer) return -1;
+          else return 1;
+        });
+      this.attackTarget = units[0];
+    }
+    return this.attackTarget != null;
+  }
+
+  void DoDamage()
+  {
+    if (this.DoDamageOverride != null) this.DoDamageOverride(this);
+    else this.attackTarget.TakeDamage(this.damage + (this.player.upgrade * 20));
   }
 
   bool ShouldStop()
@@ -137,16 +169,6 @@ public class Unit
       }
     }
     return move.normalized;
-  }
-
-  List<Unit> GetUnitsWithin(float f)
-  {
-    return this.game.units.FindAll(unit =>
-      {
-        if (unit == this) return false;
-        return this.GetDistanceAway(unit) <= f;
-      }
-    );
   }
 
   float GetDistanceAway(Unit unit)

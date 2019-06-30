@@ -441,7 +441,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -0.00003439188, y: 37.999855}
+  m_AnchoredPosition: {x: -0.00003439188, y: 37.999878}
   m_SizeDelta: {x: 300, y: 20}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &84713755
@@ -588,6 +588,8 @@ MonoBehaviour:
   soldierPrefab: {fileID: 7312955348786397587, guid: 574f905f6b8336546aea5bbd7e4d2a48,
     type: 3}
   archerPrefab: {fileID: 5895252774645588607, guid: 56132cbc02b04ad4882821fdd8aad1ff,
+    type: 3}
+  priestPrefab: {fileID: 7350811640749695487, guid: 3c5d39aa9998c084a8048fc6dd6b580e,
     type: 3}
 --- !u!1 &91521224
 GameObject:
@@ -4008,7 +4010,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -40, y: 12.499878}
+  m_AnchoredPosition: {x: -40, y: 12.5}
   m_SizeDelta: {x: 50, y: -240}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &675976965
