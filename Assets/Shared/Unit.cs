@@ -61,7 +61,6 @@ public class Unit
 
   public void TakeDamage(int damage)
   {
-    Debug.Log(this.id + " Take damage " + damage);
     this.health = Math.Max(0, this.health - damage);
   }
 
