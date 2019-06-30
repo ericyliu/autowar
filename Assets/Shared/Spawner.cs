@@ -69,7 +69,7 @@ public class Spawner
     unit.speed = 2.5f;
     unit.maxHealth = 50;
     unit.attackRange = 9f;
-    unit.damage = 3;
+    unit.damage = 10;
     unit.attackSpeed = 35;
     unit.attackDamageDelay = 10;
     unit.AcquireTargetOverride = thisUnit =>
