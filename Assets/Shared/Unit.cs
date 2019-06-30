@@ -6,7 +6,8 @@ public enum UnitType
 {
   Null,
   Base,
-  Soldier
+  Soldier,
+  Archer
 }
 
 public class Unit

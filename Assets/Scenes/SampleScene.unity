@@ -485,6 +485,8 @@ MonoBehaviour:
     type: 3}
   soldierPrefab: {fileID: 7312955348786397587, guid: 574f905f6b8336546aea5bbd7e4d2a48,
     type: 3}
+  archerPrefab: {fileID: 5895252774645588607, guid: 56132cbc02b04ad4882821fdd8aad1ff,
+    type: 3}
 --- !u!1 &91521224
 GameObject:
   m_ObjectHideFlags: 0

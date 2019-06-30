@@ -20,6 +20,8 @@ public class Spawner
         return this.SpawnBase(player, position);
       case UnitType.Soldier:
         return this.SpawnSoldier(player, position);
+      case UnitType.Archer:
+        return this.SpawnArcher(player, position);
     }
     throw new Exception("unit type " + type + " not defined in spawner");
   }
@@ -38,8 +40,15 @@ public class Spawner
   {
     var unit = this.Spawn(UnitType.Soldier, player, position);
     unit.speed = 3f;
-    unit.size = 1.5f;
-    unit.height = 1f;
+    return unit;
+  }
+
+  Unit SpawnArcher(Player player, Vector2 position)
+  {
+    var unit = this.Spawn(UnitType.Archer, player, position);
+    unit.speed = 2.5f;
+    unit.health = 60;
+    unit.attackRange = 8f;
     return unit;
   }
 

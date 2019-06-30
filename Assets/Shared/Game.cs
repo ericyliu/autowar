@@ -17,13 +17,14 @@ public class Game
   public static List<UnitType> GetBuyableUnits()
   {
     return new List<UnitType>(){
-      UnitType.Soldier
+      UnitType.Soldier,
+      UnitType.Archer
     };
   }
 
   public static int GetBuyUnitCost(UnitType type)
   {
-    return 500;
+    return 100;
   }
 
   public static int GetUpgradeCost(Player player)

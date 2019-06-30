@@ -1,17 +1,16 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnerComponent : MonoBehaviour
 {
   public GameObject basePrefab;
   public GameObject soldierPrefab;
+  public GameObject archerPrefab;
 
   public UnitComponent Spawn(Unit unit)
   {
-    GameObject prefab = null;
-    if (unit.type == UnitType.Base) prefab = basePrefab;
-    else if (unit.type == UnitType.Soldier) prefab = soldierPrefab;
-    if (prefab == null) throw new Exception("No prefab exists for " + unit.type);
+    GameObject prefab = this.GetPrefab(unit.type);
     var unitObject = Instantiate(
       prefab,
       VectorUtil.Vector2To3(unit.position, unit.height),
@@ -22,5 +21,13 @@ public class SpawnerComponent : MonoBehaviour
     unitComponent.unit = unit;
     unitComponent.Initialize();
     return unitComponent;
+  }
+
+  public GameObject GetPrefab(UnitType type)
+  {
+    if (type == UnitType.Base) return basePrefab;
+    else if (type == UnitType.Soldier) return soldierPrefab;
+    else if (type == UnitType.Archer) return archerPrefab;
+    throw new Exception("No prefab exists for " + type);
   }
 }
