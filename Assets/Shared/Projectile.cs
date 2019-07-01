@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum ProjectileType
 {
-  Arrow
+  Arrow,
+  Fireball
 }
 
 public class Projectile
@@ -16,7 +18,9 @@ public class Projectile
   public Unit target;
   public float speed = 10f;
   public Action<int> DoDamage;
+  public List<Action> OnDamageDealt = new List<Action>();
   Game game;
+  Vector2 targetLastPosition;
 
   public Projectile(int id, ProjectileType type, Game game, Vector2 position, Unit target)
   {
@@ -25,22 +29,25 @@ public class Projectile
     this.game = game;
     this.position = position;
     this.target = target;
+    this.targetLastPosition = target.position;
   }
 
   public void Act()
   {
-    if (Vector2.Distance(this.target.position, this.position) < this.target.size)
+    var targetPosition = this.target.health > 0 ? this.target.position : this.targetLastPosition;
+    if (Vector2.Distance(targetPosition, this.position) < this.target.size)
     {
-      if (this.DoDamage != null)
+      if (this.DoDamage != null) this.DoDamage(damage);
+      else
       {
-        this.DoDamage(damage);
-        return;
+        this.target.TakeDamage(this.damage);
+        this.alive = false;
       }
-      this.target.TakeDamage(this.damage);
-      this.alive = false;
+      this.OnDamageDealt.ForEach(fn => fn());
       return;
     }
-    var direction = this.target.position - this.position;
+    var direction = targetPosition - this.position;
     this.position += direction.normalized * speed / 10;
+    this.targetLastPosition = this.target.position;
   }
 }

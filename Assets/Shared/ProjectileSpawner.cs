@@ -13,11 +13,14 @@ public class ProjectileSpawner
 
   public Projectile Spawn(Vector2 position, ProjectileType type, Unit target)
   {
-    Projectile projectile = new Projectile(this.nextId++, type, game, position, target);
+    Projectile projectile = null;
     switch (type)
     {
       case ProjectileType.Arrow:
         projectile = this.SpawnArrow(position, target);
+        break;
+      case ProjectileType.Fireball:
+        projectile = this.SpawnFireball(position, target);
         break;
     }
     if (projectile == null) throw new Exception("projectile type " + type + " not defined in spawner");
@@ -27,6 +30,11 @@ public class ProjectileSpawner
   Projectile SpawnArrow(Vector2 position, Unit target)
   {
     return this.SpawnBaseProjectile(ProjectileType.Arrow, position, target);
+  }
+
+  Projectile SpawnFireball(Vector2 position, Unit target)
+  {
+    return this.SpawnBaseProjectile(ProjectileType.Fireball, position, target);
   }
 
   Projectile SpawnBaseProjectile(ProjectileType type, Vector2 position, Unit target)

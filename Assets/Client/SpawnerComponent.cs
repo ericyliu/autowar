@@ -16,6 +16,10 @@ public class SpawnerComponent : MonoBehaviour
 
   // Projectiles
   public GameObject arrowPrefab;
+  public GameObject fireballPrefab;
+
+  // Effects
+  public GameObject explosionPrefab;
 
   public UnitComponent SpawnUnit(Unit unit)
   {
@@ -45,6 +49,22 @@ public class SpawnerComponent : MonoBehaviour
     var projectileComponent = projectileObject.GetComponent<ProjectileComponent>();
     projectileComponent.projectile = projectile;
     projectileComponent.Initialize();
+    return this.DecorateProjectile(projectileComponent);
+  }
+
+  ProjectileComponent DecorateProjectile(ProjectileComponent projectileComponent)
+  {
+    if (projectileComponent.projectile.type == ProjectileType.Fireball)
+    {
+      projectileComponent.projectile.OnDamageDealt.Add(() =>
+      {
+        var explosionObject = Instantiate(
+          this.explosionPrefab,
+          projectileComponent.transform.position,
+          Quaternion.identity
+        );
+      });
+    }
     return projectileComponent;
   }
 
@@ -75,6 +95,7 @@ public class SpawnerComponent : MonoBehaviour
   public GameObject GetProjectilePrefab(ProjectileType type)
   {
     if (type == ProjectileType.Arrow) return arrowPrefab;
+    if (type == ProjectileType.Fireball) return fireballPrefab;
     throw new Exception("No prefab exists for " + type);
   }
 }

@@ -598,6 +598,10 @@ MonoBehaviour:
     type: 3}
   arrowPrefab: {fileID: 2823731573049939284, guid: 25472c3d19cdd2d46b4bd10329e92533,
     type: 3}
+  fireballPrefab: {fileID: 7428773044260697029, guid: 20ab9eda4161e5e4383b81e8e7b8a50a,
+    type: 3}
+  explosionPrefab: {fileID: 7471401600424677119, guid: a85614ab62671b847b05f24d8f2d67e4,
+    type: 3}
 --- !u!1 &91521224
 GameObject:
   m_ObjectHideFlags: 0

@@ -134,7 +134,7 @@ public class Spawner
     unit.attackDamageDelay = 25f;
     unit.DoDamageOverride = thisUnit =>
     {
-      var fireball = this.SpawnProjectile(thisUnit.position, ProjectileType.Arrow, thisUnit.attackTarget);
+      var fireball = this.SpawnProjectile(thisUnit.position, ProjectileType.Fireball, thisUnit.attackTarget);
       fireball.damage = unit.damage + (thisUnit.player.upgrade * 20);
       fireball.speed = 5f;
       fireball.DoDamage = damage =>
@@ -142,6 +142,7 @@ public class Spawner
         fireball.target.GetUnitsWithin(3f, u =>
           u.player.id == thisUnit.player.enemy.id
         ).ForEach(u => u.TakeDamage(damage));
+        fireball.target.TakeDamage(damage);
         fireball.alive = false;
       };
     };
