@@ -29,7 +29,7 @@ public class Player
     this.playerBase = game.spawner.SpawnUnit(this, baseLocation, UnitType.Base);
     this.spawns = spawns;
     this.spawnTarget = spawnTarget;
-    this.unitsToSpawn[0] = UnitType.Soldier;
+    this.unitsToSpawn[0] = UnitType.Archer;
   }
 
 }

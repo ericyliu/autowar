@@ -4,11 +4,18 @@ using UnityEngine;
 public class Spawner
 {
   public Game game;
+  public ProjectileSpawner projectileSpawner;
   public int nextId = 0;
 
   public Spawner(Game game)
   {
     this.game = game;
+    this.projectileSpawner = new ProjectileSpawner(game);
+  }
+
+  public Projectile SpawnProjectile(Vector2 position, ProjectileType type, Unit target)
+  {
+    return this.projectileSpawner.Spawn(position, type, target);
   }
 
   public Unit SpawnUnit(Player player, Vector2 position, UnitType type)
@@ -60,6 +67,11 @@ public class Spawner
     unit.damage = 30;
     unit.attackSpeed = 35;
     unit.attackDamageDelay = 23;
+    unit.DoDamageOverride = (thisUnit =>
+    {
+      var arrow = this.SpawnProjectile(thisUnit.position, ProjectileType.Arrow, thisUnit.attackTarget);
+      arrow.damage = unit.damage + (thisUnit.player.upgrade * 20);
+    });
     return unit;
   }
 

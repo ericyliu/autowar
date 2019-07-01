@@ -32,6 +32,7 @@ public class Game
   }
 
   public List<Unit> units = new List<Unit>();
+  public List<Projectile> projectiles = new List<Projectile>();
   public List<Player> players = new List<Player>();
   public List<GameStep> steps = new List<GameStep>();
   public List<GameAction> actions = new List<GameAction>();
@@ -97,8 +98,10 @@ public class Game
     }
     if (step.id % 100 == 0) Spawn();
     if (step.id % 20 == 0) GiveGold();
-    foreach (Unit unit in this.units) unit.Act();
+    foreach (var projectile in this.projectiles) projectile.Act();
+    foreach (var unit in this.units) unit.Act();
     this.CleanupUnits();
+    this.CleanupProjectiles();
     this.step++;
     return step;
   }
@@ -170,6 +173,13 @@ public class Game
   {
     var units = this.units;
     this.units = new List<Unit>();
-    foreach (Unit unit in units) if (unit.health > 0) this.units.Add(unit);
+    foreach (var unit in units) if (unit.health > 0) this.units.Add(unit);
+  }
+
+  void CleanupProjectiles()
+  {
+    var projectiles = this.projectiles;
+    this.projectiles = new List<Projectile>();
+    foreach (var projectile in projectiles) if (projectile.alive) this.projectiles.Add(projectile);
   }
 }
