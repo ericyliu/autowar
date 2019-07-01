@@ -7,14 +7,14 @@ public enum ProjectileType
 
 public class Projectile
 {
+  public int id;
+  public ProjectileType type;
   public int damage = 30;
   public bool alive = true;
-  int id;
-  ProjectileType type;
+  public Vector2 position = Vector2.zero;
+  public Unit target;
   Game game;
-  Vector2 position = Vector2.zero;
-  Unit target;
-  float speed = 5f;
+  float speed = 10f;
 
   public Projectile(int id, ProjectileType type, Game game, Vector2 position, Unit target)
   {

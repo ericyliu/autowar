@@ -594,6 +594,8 @@ MonoBehaviour:
     type: 3}
   priestPrefab: {fileID: 7350811640749695487, guid: 3c5d39aa9998c084a8048fc6dd6b580e,
     type: 3}
+  arrowPrefab: {fileID: 2823731573049939284, guid: 25472c3d19cdd2d46b4bd10329e92533,
+    type: 3}
 --- !u!1 &91521224
 GameObject:
   m_ObjectHideFlags: 0

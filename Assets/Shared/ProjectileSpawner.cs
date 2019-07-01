@@ -20,7 +20,7 @@ public class ProjectileSpawner
         projectile = this.SpawnArrow(position, target);
         break;
     }
-    if (projectile == null) throw new Exception("unit type " + type + " not defined in spawner");
+    if (projectile == null) throw new Exception("projectile type " + type + " not defined in spawner");
     return projectile;
   }
 

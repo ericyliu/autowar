@@ -66,7 +66,7 @@ public class Spawner
     unit.attackRange = 8f;
     unit.damage = 30;
     unit.attackSpeed = 35;
-    unit.attackDamageDelay = 23;
+    unit.attackDamageDelay = 15;
     unit.DoDamageOverride = (thisUnit =>
     {
       var arrow = this.SpawnProjectile(thisUnit.position, ProjectileType.Arrow, thisUnit.attackTarget);

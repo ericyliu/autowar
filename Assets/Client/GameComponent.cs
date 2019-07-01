@@ -13,6 +13,7 @@ public class GameComponent : MonoBehaviour
   public Game game;
   public List<GameStep> steps = new List<GameStep>();
   public Dictionary<int, UnitComponent> unitComponents = new Dictionary<int, UnitComponent>();
+  public Dictionary<int, ProjectileComponent> projectileComponents = new Dictionary<int, ProjectileComponent>();
 
   public void BuyWorker()
   {
@@ -40,6 +41,8 @@ public class GameComponent : MonoBehaviour
     this.StepGame();
     this.DespawnUnits();
     this.SpawnUnits();
+    this.DespawnProjectiles();
+    this.SpawnProjectiles();
   }
 
   void StepGame()
@@ -70,11 +73,31 @@ public class GameComponent : MonoBehaviour
   void SpawnUnits()
   {
     foreach (Unit unit in this.game.units)
-    {
       if (!unitComponents.ContainsKey(unit.id))
+        unitComponents.Add(unit.id, spawnerComponent.SpawnUnit(unit));
+  }
+
+  void DespawnProjectiles()
+  {
+    var componentsToDelete = new List<int>();
+    foreach (int id in this.projectileComponents.Keys)
+    {
+      if (this.game.projectiles.Find(p => p.id == id) == null)
       {
-        unitComponents.Add(unit.id, spawnerComponent.Spawn(unit));
-      }
+        componentsToDelete.Add(id);
+      };
     }
+    componentsToDelete.ForEach(id =>
+    {
+      GameObject.Destroy(this.projectileComponents[id].gameObject);
+      this.projectileComponents.Remove(id);
+    });
+  }
+
+  void SpawnProjectiles()
+  {
+    foreach (var projectile in this.game.projectiles)
+      if (!projectileComponents.ContainsKey(projectile.id))
+        projectileComponents.Add(projectile.id, spawnerComponent.SpawnProjectile(projectile));
   }
 }
