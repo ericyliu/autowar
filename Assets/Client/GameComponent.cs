@@ -61,6 +61,7 @@ public class GameComponent : MonoBehaviour
     }
     componentsToDelete.ForEach(id =>
     {
+      GameObject.Destroy(this.unitComponents[id].healthBar.gameObject);
       GameObject.Destroy(this.unitComponents[id].gameObject);
       this.unitComponents.Remove(id);
     });

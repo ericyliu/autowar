@@ -6,6 +6,7 @@ public class UnitComponent : MonoBehaviour
 {
   public int health;
   public GameObject teamColorObject;
+  public HealthBarComponent healthBar;
   public Animator animator;
   public Unit unit;
   Vector2 lastPosition = Vector2.zero;
@@ -28,7 +29,7 @@ public class UnitComponent : MonoBehaviour
   void Update()
   {
     if (!this.initialized) return;
-    this.health = this.unit.health;
+    this.healthBar.OnHealthChanged(1f * this.unit.health / this.unit.maxHealth);
     this.transform.localScale = new Vector3(1, 1, 1) * ((this.unit.player.upgrade * .1f) + 1);
     this.MoveAndRotate();
   }

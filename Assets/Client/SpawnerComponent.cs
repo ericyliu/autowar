@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SpawnerComponent : MonoBehaviour
 {
+  public RectTransform healthBarsRect;
+  public GameObject healthBarPrefab;
   public GameObject basePrefab;
   public GameObject soldierPrefab;
   public GameObject archerPrefab;
@@ -21,7 +23,22 @@ public class SpawnerComponent : MonoBehaviour
     UnitComponent unitComponent = unitObject.GetComponent<UnitComponent>();
     unitComponent.unit = unit;
     unitComponent.Initialize();
+    unitComponent.healthBar = this.AttachHealthBar(unitObject, unit);
     return unitComponent;
+  }
+
+  HealthBarComponent AttachHealthBar(GameObject unitObject, Unit unit)
+  {
+    var healthBar = Instantiate(this.healthBarPrefab);
+    var hbc = healthBar.GetComponent<HealthBarComponent>();
+    hbc.SetHealthBarData(
+      unitObject.transform,
+      healthBarsRect,
+      unit.size * 15f
+    );
+    healthBar.transform.SetParent(healthBarsRect, false);
+    healthBar.transform.localScale = healthBar.transform.localScale * unit.size;
+    return hbc;
   }
 
   public GameObject GetPrefab(UnitType type)
