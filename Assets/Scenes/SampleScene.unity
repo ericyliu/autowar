@@ -441,7 +441,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -0.00003439188, y: 37.999878}
+  m_AnchoredPosition: {x: -0.00003439188, y: 37.999756}
   m_SizeDelta: {x: 300, y: 20}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &84713755
@@ -595,6 +595,8 @@ MonoBehaviour:
   priestPrefab: {fileID: 7350811640749695487, guid: 3c5d39aa9998c084a8048fc6dd6b580e,
     type: 3}
   firemagePrefab: {fileID: 7485665350096673910, guid: 493a28f3b84df654eb1fdc03a4d9f1df,
+    type: 3}
+  assassinPrefab: {fileID: 9122714708574997737, guid: 841e588e010625e469aa37dc85d37741,
     type: 3}
   arrowPrefab: {fileID: 2823731573049939284, guid: 25472c3d19cdd2d46b4bd10329e92533,
     type: 3}
@@ -3364,7 +3366,7 @@ MonoBehaviour:
   m_ChildAlignment: 2
   m_StartCorner: 1
   m_StartAxis: 1
-  m_CellSize: {x: 160, y: 50}
+  m_CellSize: {x: 130, y: 50}
   m_Spacing: {x: 10, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
@@ -6828,7 +6830,7 @@ MonoBehaviour:
   m_ChildAlignment: 2
   m_StartCorner: 1
   m_StartAxis: 1
-  m_CellSize: {x: 160, y: 50}
+  m_CellSize: {x: 130, y: 50}
   m_Spacing: {x: 10, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
@@ -7237,7 +7239,7 @@ MonoBehaviour:
   m_ChildAlignment: 2
   m_StartCorner: 1
   m_StartAxis: 1
-  m_CellSize: {x: 160, y: 50}
+  m_CellSize: {x: 130, y: 50}
   m_Spacing: {x: 10, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
@@ -10567,7 +10569,7 @@ MonoBehaviour:
   m_ChildAlignment: 2
   m_StartCorner: 1
   m_StartAxis: 1
-  m_CellSize: {x: 160, y: 50}
+  m_CellSize: {x: 130, y: 50}
   m_Spacing: {x: 10, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2

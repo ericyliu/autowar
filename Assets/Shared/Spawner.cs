@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Spawner
@@ -37,6 +38,9 @@ public class Spawner
         break;
       case UnitType.FireMage:
         unit = this.SpawnFireMage(player, position);
+        break;
+      case UnitType.Assassin:
+        unit = this.SpawnAssassin(player, position);
         break;
     }
     if (unit == null) throw new Exception("unit type " + type + " not defined in spawner");
@@ -146,6 +150,42 @@ public class Spawner
         fireball.alive = false;
       };
     };
+    return unit;
+  }
+
+  Unit SpawnAssassin(Player player, Vector2 position)
+  {
+    var unit = Spawn(UnitType.Assassin, player, position);
+    unit.speed = 3f;
+    unit.maxHealth = 70;
+    unit.damage = 50;
+    unit.attackSpeed = 70;
+    unit.invisible = true;
+    var priorityList = new List<UnitType>(){
+      UnitType.FireMage,
+      UnitType.Priest
+    };
+    unit.AcquireTargetOverride = thisUnit =>
+    {
+      var units = thisUnit
+        .GetUnitsWithin(thisUnit.aggroRadius, u =>
+          u.player.id == thisUnit.player.enemy.id &&
+          u.health >= 0
+        );
+      if (units.Count == 0)
+      {
+        thisUnit.attackTarget = null;
+        return false;
+      }
+      units
+        .ForEach(u =>
+        {
+          if (thisUnit.attackTarget == null) thisUnit.attackTarget = u;
+          else if (priorityList.IndexOf(u.type) > priorityList.IndexOf(thisUnit.attackTarget.type)) thisUnit.attackTarget = u;
+        });
+      return thisUnit.attackTarget != null;
+    };
+    unit.onAttack.Add(() => unit.invisible = false);
     return unit;
   }
 

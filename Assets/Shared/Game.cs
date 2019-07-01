@@ -19,6 +19,7 @@ public class Game
       UnitType.Archer,
       UnitType.Priest,
       UnitType.FireMage,
+      UnitType.Assassin,
     };
   }
 

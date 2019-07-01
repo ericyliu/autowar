@@ -10,6 +10,7 @@ public enum UnitType
   Archer,
   Priest,
   FireMage,
+  Assassin,
 }
 
 public class Unit
@@ -29,6 +30,7 @@ public class Unit
   public int maxHealth = 100;
   public int health = 100;
   public int damage = 20;
+  public bool invisible = false;
   public Game game;
   public Player player;
   public bool attacking = false;
@@ -104,7 +106,11 @@ public class Unit
     if (this.attackTarget == null || this.attackTarget.health <= 0)
     {
       var units = this.GetUnitsWithin(this.aggroRadius)
-        .FindAll(unit => unit.player.id == this.player.enemy.id && unit.health > 0);
+        .FindAll(unit => unit.player.id ==
+          this.player.enemy.id &&
+          unit.health > 0 &&
+          !unit.invisible
+        );
       if (units.Count == 0)
       {
         this.attackTarget = null;
@@ -149,14 +155,14 @@ public class Unit
   Vector2 GetNextPosition(Vector2 position, Vector2 target)
   {
     Vector2 move = (target - position).normalized;
-    move = GetMoveWithCollision(move, position);
+    move = this.invisible ? move : GetMoveWithCollision(move, position);
     return position + (move * this.speed / 10);
   }
 
   Vector2 GetMoveWithCollision(Vector2 move, Vector2 position)
   {
     // Dont Walk into Units
-    List<Unit> collidedUnits = this.GetUnitsWithin(0f);
+    List<Unit> collidedUnits = this.GetUnitsWithin(0f, u => !u.invisible);
     foreach (Unit unit in collidedUnits)
     {
       move = move + (position - unit.position).normalized;
