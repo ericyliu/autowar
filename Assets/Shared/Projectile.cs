@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public enum ProjectileType
@@ -13,8 +14,9 @@ public class Projectile
   public bool alive = true;
   public Vector2 position = Vector2.zero;
   public Unit target;
+  public float speed = 10f;
+  public Action<int> DoDamage;
   Game game;
-  float speed = 10f;
 
   public Projectile(int id, ProjectileType type, Game game, Vector2 position, Unit target)
   {
@@ -29,6 +31,11 @@ public class Projectile
   {
     if (Vector2.Distance(this.target.position, this.position) < this.target.size)
     {
+      if (this.DoDamage != null)
+      {
+        this.DoDamage(damage);
+        return;
+      }
       this.target.TakeDamage(this.damage);
       this.alive = false;
       return;

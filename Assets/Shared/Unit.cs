@@ -8,7 +8,8 @@ public enum UnitType
   Base,
   Soldier,
   Archer,
-  Priest
+  Priest,
+  FireMage,
 }
 
 public class Unit
@@ -69,12 +70,13 @@ public class Unit
     this.health = Math.Min(this.maxHealth, this.health + damage);
   }
 
-  public List<Unit> GetUnitsWithin(float f)
+  public List<Unit> GetUnitsWithin(float f, Func<Unit, bool> filter = null)
   {
     return this.game.units.FindAll(unit =>
       {
         if (unit == this) return false;
-        return this.GetDistanceAway(unit) <= f;
+        var passFilter = filter == null || filter(unit);
+        return passFilter && this.GetDistanceAway(unit) <= f;
       }
     );
   }
@@ -103,7 +105,11 @@ public class Unit
     {
       var units = this.GetUnitsWithin(this.aggroRadius)
         .FindAll(unit => unit.player.id == this.player.enemy.id && unit.health > 0);
-      if (units.Count == 0) return false;
+      if (units.Count == 0)
+      {
+        this.attackTarget = null;
+        return false;
+      }
       units
         .Sort((unit1, unit2) =>
         {

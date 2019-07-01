@@ -35,6 +35,9 @@ public class Spawner
       case UnitType.Priest:
         unit = this.SpawnPriest(player, position);
         break;
+      case UnitType.FireMage:
+        unit = this.SpawnFireMage(player, position);
+        break;
     }
     if (unit == null) throw new Exception("unit type " + type + " not defined in spawner");
     unit.Initialize();
@@ -116,6 +119,31 @@ public class Spawner
     unit.DoDamageOverride = thisUnit =>
     {
       thisUnit.attackTarget.Heal(thisUnit.damage + (thisUnit.player.upgrade * 20));
+    };
+    return unit;
+  }
+
+  Unit SpawnFireMage(Player player, Vector2 position)
+  {
+    var unit = Spawn(UnitType.FireMage, player, position);
+    unit.speed = 2f;
+    unit.maxHealth = 50;
+    unit.attackRange = 11f;
+    unit.damage = 30;
+    unit.attackSpeed = 70;
+    unit.attackDamageDelay = 25f;
+    unit.DoDamageOverride = thisUnit =>
+    {
+      var fireball = this.SpawnProjectile(thisUnit.position, ProjectileType.Arrow, thisUnit.attackTarget);
+      fireball.damage = unit.damage + (thisUnit.player.upgrade * 20);
+      fireball.speed = 5f;
+      fireball.DoDamage = damage =>
+      {
+        fireball.target.GetUnitsWithin(3f, u =>
+          u.player.id == thisUnit.player.enemy.id
+        ).ForEach(u => u.TakeDamage(damage));
+        fireball.alive = false;
+      };
     };
     return unit;
   }

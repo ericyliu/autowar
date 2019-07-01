@@ -17,7 +17,8 @@ public class Game
     return new List<UnitType>(){
       UnitType.Soldier,
       UnitType.Archer,
-      UnitType.Priest
+      UnitType.Priest,
+      UnitType.FireMage,
     };
   }
 

@@ -12,6 +12,7 @@ public class SpawnerComponent : MonoBehaviour
   public GameObject soldierPrefab;
   public GameObject archerPrefab;
   public GameObject priestPrefab;
+  public GameObject firemagePrefab;
 
   // Projectiles
   public GameObject arrowPrefab;
@@ -67,6 +68,7 @@ public class SpawnerComponent : MonoBehaviour
     else if (type == UnitType.Soldier) return soldierPrefab;
     else if (type == UnitType.Archer) return archerPrefab;
     else if (type == UnitType.Priest) return priestPrefab;
+    else if (type == UnitType.FireMage) return firemagePrefab;
     throw new Exception("No prefab exists for " + type);
   }
 
