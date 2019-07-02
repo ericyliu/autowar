@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SpawnerComponent : MonoBehaviour
 {
+  public GameComponent gameComponent;
   public RectTransform healthBarsRect;
   public GameObject healthBarPrefab;
 
@@ -33,6 +34,7 @@ public class SpawnerComponent : MonoBehaviour
     unitObject.name = unit.id + ": " + unit.type;
     var unitComponent = unitObject.GetComponent<UnitComponent>();
     unitComponent.unit = unit;
+    unitComponent.gameComponent = this.gameComponent;
     unitComponent.Initialize();
     unitComponent.healthBar = this.AttachHealthBar(unitObject, unit);
     return unitComponent;

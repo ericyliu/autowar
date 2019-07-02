@@ -583,6 +583,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7b7548bea3a6c2409f2b3012447acaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameComponent: {fileID: 88920330}
   healthBarsRect: {fileID: 1670301097}
   healthBarPrefab: {fileID: 839568659801583264, guid: 3a7b107ef66c4c945a41532862435864,
     type: 3}

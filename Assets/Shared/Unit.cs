@@ -106,7 +106,7 @@ public class Unit
   bool AcquireTarget()
   {
     if (this.AcquireTargetOverride != null) return this.AcquireTargetOverride(this);
-    if (this.attackTarget == null || this.attackTarget.health <= 0)
+    if (this.attackTarget == null || this.attackTarget.health <= 0 || this.attackTarget.invisible)
     {
       var units = this.GetUnitsWithin(this.aggroRadius, unit =>
         unit.player.id == this.player.enemy.id &&

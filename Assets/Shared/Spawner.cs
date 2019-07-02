@@ -171,7 +171,8 @@ public class Spawner
       var units = thisUnit
         .GetUnitsWithin(thisUnit.aggroRadius, u =>
           u.player.id == thisUnit.player.enemy.id &&
-          u.health > 0
+          u.health > 0 &&
+          !u.invisible
         );
       if (units.Count == 0)
       {
@@ -179,16 +180,27 @@ public class Spawner
         return false;
       }
       units
-        .ForEach(u =>
+        .Sort((unit1, unit2) =>
         {
-          if (thisUnit.attackTarget == null || thisUnit.attackTarget.health <= 0) thisUnit.attackTarget = u;
-          else if (priorityList.IndexOf(u.type) > priorityList.IndexOf(thisUnit.attackTarget.type)) thisUnit.attackTarget = u;
+          var unit1Priority = priorityList.IndexOf(unit1.type);
+          var unit2Priority = priorityList.IndexOf(unit2.type);
+          if (unit1Priority > unit2Priority) return -1;
+          if (unit1Priority < unit2Priority) return 1;
+          var unit1Closer = Vector2.Distance(unit1.position, unit.position) <= Vector2.Distance(unit2.position, unit.position);
+          if (unit1Closer) return -1;
+          else return 1;
         });
+      thisUnit.attackTarget = units[0];
       return thisUnit.attackTarget != null;
     };
     unit.doDuringAttackFrame = () =>
     {
-      if (unit.lastAttackedStep + 15 == unit.game.step) unit.invisible = false;
+      if (unit.lastAttackedStep + 5 == unit.game.step) unit.invisible = false;
+    };
+    unit.DoDamageOverride = thisUnit =>
+    {
+      unit.attackTarget.TakeDamage(unit.damage + (unit.player.upgrade * 20));
+      unit.invisible = true;
     };
     return unit;
   }

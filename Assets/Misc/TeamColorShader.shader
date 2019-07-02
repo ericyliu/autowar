@@ -29,7 +29,7 @@
         void surf(Input IN, inout SurfaceOutputStandard o) {
             fixed4 sampledColor = tex2D(_MainTex, IN.uv_MainTex);
             fixed4 c = sampledColor * IN.color * _Color;
-            if (sampledColor.a < 0.5)
+            if (sampledColor.a < 0)
             {
                 o.Albedo = c;
             }
@@ -41,7 +41,7 @@
             o.Metallic = _Metallic;
             o.Smoothness = _Glossiness;
 
-            o.Alpha = c.a;
+            o.Alpha = _TeamColor.a;
         }
         ENDCG
     }
