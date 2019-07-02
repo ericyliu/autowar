@@ -35,9 +35,10 @@ public class Unit
   public Player player;
   public bool attacking = false;
   public List<Action> onAttack = new List<Action>();
+  public Action doDuringAttackFrame;
   public Action<Unit> DoDamageOverride;
   public Func<Unit, bool> AcquireTargetOverride;
-  int lastAttackedStep = 0;
+  public int lastAttackedStep = 0;
 
   public Unit(int id, UnitType type, Player player, Vector2 position)
   {
@@ -56,8 +57,9 @@ public class Unit
 
   public void Act()
   {
-    this.attacking = false;
     if (this.Attack()) return;
+    this.attacking = false;
+    this.lastAttackedStep = 0;
     if (this.ShouldStop()) return;
     this.Move();
   }
@@ -93,6 +95,7 @@ public class Unit
       this.onAttack.ForEach(fn => fn());
       this.lastAttackedStep = this.game.step;
     }
+    if (this.doDuringAttackFrame != null) this.doDuringAttackFrame();
     if (this.game.step == this.lastAttackedStep + this.attackDamageDelay)
     {
       this.DoDamage();
@@ -105,12 +108,11 @@ public class Unit
     if (this.AcquireTargetOverride != null) return this.AcquireTargetOverride(this);
     if (this.attackTarget == null || this.attackTarget.health <= 0)
     {
-      var units = this.GetUnitsWithin(this.aggroRadius)
-        .FindAll(unit => unit.player.id ==
-          this.player.enemy.id &&
-          unit.health > 0 &&
-          !unit.invisible
-        );
+      var units = this.GetUnitsWithin(this.aggroRadius, unit =>
+        unit.player.id == this.player.enemy.id &&
+        unit.health > 0 &&
+        !unit.invisible
+      );
       if (units.Count == 0)
       {
         this.attackTarget = null;
@@ -155,14 +157,14 @@ public class Unit
   Vector2 GetNextPosition(Vector2 position, Vector2 target)
   {
     Vector2 move = (target - position).normalized;
-    move = this.invisible ? move : GetMoveWithCollision(move, position);
+    move = GetMoveWithCollision(move, position);
     return position + (move * this.speed / 10);
   }
 
   Vector2 GetMoveWithCollision(Vector2 move, Vector2 position)
   {
     // Dont Walk into Units
-    List<Unit> collidedUnits = this.GetUnitsWithin(0f, u => !u.invisible);
+    List<Unit> collidedUnits = this.GetUnitsWithin(0f);
     foreach (Unit unit in collidedUnits)
     {
       move = move + (position - unit.position).normalized;

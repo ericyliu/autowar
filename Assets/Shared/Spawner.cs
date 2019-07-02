@@ -156,10 +156,11 @@ public class Spawner
   Unit SpawnAssassin(Player player, Vector2 position)
   {
     var unit = Spawn(UnitType.Assassin, player, position);
-    unit.speed = 3f;
+    unit.speed = 2.5f;
     unit.maxHealth = 70;
     unit.damage = 50;
-    unit.attackSpeed = 70;
+    unit.attackSpeed = 50;
+    unit.aggroRadius = 20f;
     unit.invisible = true;
     var priorityList = new List<UnitType>(){
       UnitType.FireMage,
@@ -170,7 +171,7 @@ public class Spawner
       var units = thisUnit
         .GetUnitsWithin(thisUnit.aggroRadius, u =>
           u.player.id == thisUnit.player.enemy.id &&
-          u.health >= 0
+          u.health > 0
         );
       if (units.Count == 0)
       {
@@ -180,12 +181,15 @@ public class Spawner
       units
         .ForEach(u =>
         {
-          if (thisUnit.attackTarget == null) thisUnit.attackTarget = u;
+          if (thisUnit.attackTarget == null || thisUnit.attackTarget.health <= 0) thisUnit.attackTarget = u;
           else if (priorityList.IndexOf(u.type) > priorityList.IndexOf(thisUnit.attackTarget.type)) thisUnit.attackTarget = u;
         });
       return thisUnit.attackTarget != null;
     };
-    unit.onAttack.Add(() => unit.invisible = false);
+    unit.doDuringAttackFrame = () =>
+    {
+      if (unit.lastAttackedStep + 15 == unit.game.step) unit.invisible = false;
+    };
     return unit;
   }
 
