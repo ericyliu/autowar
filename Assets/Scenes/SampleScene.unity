@@ -519,6 +519,7 @@ GameObject:
   - component: {fileID: 88920331}
   - component: {fileID: 88920330}
   - component: {fileID: 88920332}
+  - component: {fileID: 88920333}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -587,6 +588,27 @@ MonoBehaviour:
   healthBarsRect: {fileID: 1670301097}
   healthBarPrefab: {fileID: 839568659801583264, guid: 3a7b107ef66c4c945a41532862435864,
     type: 3}
+  unitMeta: {fileID: 0}
+  arrowPrefab: {fileID: 2823731573049939284, guid: 25472c3d19cdd2d46b4bd10329e92533,
+    type: 3}
+  fireballPrefab: {fileID: 7428773044260697029, guid: 20ab9eda4161e5e4383b81e8e7b8a50a,
+    type: 3}
+  explosionPrefab: {fileID: 7471401600424677119, guid: a85614ab62671b847b05f24d8f2d67e4,
+    type: 3}
+  smitePrefab: {fileID: 5432999311012014730, guid: 05972ad4ed2085d47a7f5f3c07ffd04f,
+    type: 3}
+--- !u!114 &88920333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 88920328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 356ffa37090cc7044aa786d106d99908, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   basePrefab: {fileID: 3334830022756862516, guid: 23b0325379e8e03429cae20702ec3f04,
     type: 3}
   soldierPrefab: {fileID: 7312955348786397587, guid: 574f905f6b8336546aea5bbd7e4d2a48,
@@ -600,14 +622,6 @@ MonoBehaviour:
   assassinPrefab: {fileID: 9122714708574997737, guid: 841e588e010625e469aa37dc85d37741,
     type: 3}
   linkerPrefab: {fileID: 7350811640749695487, guid: 3c5d39aa9998c084a8048fc6dd6b580e,
-    type: 3}
-  arrowPrefab: {fileID: 2823731573049939284, guid: 25472c3d19cdd2d46b4bd10329e92533,
-    type: 3}
-  fireballPrefab: {fileID: 7428773044260697029, guid: 20ab9eda4161e5e4383b81e8e7b8a50a,
-    type: 3}
-  explosionPrefab: {fileID: 7471401600424677119, guid: a85614ab62671b847b05f24d8f2d67e4,
-    type: 3}
-  smitePrefab: {fileID: 5432999311012014730, guid: 05972ad4ed2085d47a7f5f3c07ffd04f,
     type: 3}
 --- !u!1 &91521224
 GameObject:

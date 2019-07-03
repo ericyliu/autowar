@@ -2,18 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum UnitType
-{
-  Null,
-  Base,
-  Soldier,
-  Archer,
-  Priest,
-  FireMage,
-  Assassin,
-  Linker,
-}
-
 public class Unit
 {
   public int id;

@@ -12,17 +12,6 @@ public class Game
     return Game.WORKER_COST * player.workers;
   }
 
-  public static List<UnitType> GetBuyableUnits()
-  {
-    return new List<UnitType>(){
-      UnitType.Soldier,
-      UnitType.Archer,
-      UnitType.Priest,
-      UnitType.FireMage,
-      UnitType.Assassin,
-    };
-  }
-
   public static int GetBuyUnitCost(UnitType type)
   {
     return 100;

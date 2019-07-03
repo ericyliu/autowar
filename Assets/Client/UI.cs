@@ -73,7 +73,7 @@ public class UI : MonoBehaviour
     this.CloseShop();
     var row = this.innerShopPanel.GetChild(slot).Find("RowContainer");
     var buyableUnitList = row.Find("Units");
-    Game.GetBuyableUnits().ForEach(type =>
+    UnitMeta.GetBuyableUnits().ForEach(type =>
     {
       if (type == this.gameComponent.player.unitsToSpawn[slot]) return;
       var button = Instantiate(this.buyUnitButtonPrefab, buyableUnitList).GetComponent<Button>();
