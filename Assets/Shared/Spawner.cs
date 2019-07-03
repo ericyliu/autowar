@@ -42,6 +42,9 @@ public class Spawner
       case UnitType.Assassin:
         unit = this.SpawnAssassin(player, position);
         break;
+      case UnitType.Linker:
+        unit = this.SpawnLinker(player, position);
+        break;
     }
     if (unit == null) throw new Exception("unit type " + type + " not defined in spawner");
     unit.Initialize();
@@ -74,11 +77,11 @@ public class Spawner
     unit.damage = 30;
     unit.attackSpeed = 35;
     unit.attackDamageDelay = 15;
-    unit.DoDamageOverride = (thisUnit =>
+    unit.DoDamageOverride = () =>
     {
-      var arrow = this.SpawnProjectile(thisUnit.position, ProjectileType.Arrow, thisUnit.attackTarget);
-      arrow.damage = unit.damage + (thisUnit.player.upgrade * 20);
-    });
+      var arrow = this.SpawnProjectile(unit.position, ProjectileType.Arrow, unit.attackTarget);
+      arrow.damage = unit.damage + (unit.player.upgrade * 20);
+    };
     return unit;
   }
 
@@ -91,39 +94,11 @@ public class Spawner
     unit.damage = 10;
     unit.attackSpeed = 35;
     unit.attackDamageDelay = 10;
-    unit.AcquireTargetOverride = thisUnit =>
+    unit.AcquireTargetOverride = this.GetUnitToHeal;
+    unit.DoDamageOverride = () =>
     {
-      if (
-        thisUnit.attackTarget == null ||
-        thisUnit.attackTarget.health >= thisUnit.attackTarget.maxHealth ||
-        thisUnit.attackTarget.health <= 0
-      )
-      {
-        var units = thisUnit
-          .GetUnitsWithin(thisUnit.aggroRadius)
-          .FindAll(u =>
-            u.player.id == thisUnit.player.id &&
-            u.health < u.maxHealth &&
-            u.health > 0
-          );
-        if (units.Count == 0) return false;
-        units
-          .Sort((unit1, unit2) =>
-          {
-            var unit1Closer =
-              Vector2.Distance(unit1.position, thisUnit.position) <=
-              Vector2.Distance(unit2.position, thisUnit.position);
-            if (unit1Closer) return -1;
-            else return 1;
-          });
-        thisUnit.attackTarget = units[0];
-      }
-      return thisUnit.attackTarget != null;
-    };
-    unit.DoDamageOverride = thisUnit =>
-    {
-      thisUnit.attackTarget.Heal(thisUnit.damage + (thisUnit.player.upgrade * 20));
-      SpawnProjectile(thisUnit.attackTarget.position, ProjectileType.Smite, thisUnit.attackTarget);
+      unit.attackTarget.Heal(unit.damage + (unit.player.upgrade * 20));
+      SpawnProjectile(unit.attackTarget.position, ProjectileType.Smite, unit.attackTarget);
     };
     return unit;
   }
@@ -137,15 +112,15 @@ public class Spawner
     unit.damage = 30;
     unit.attackSpeed = 70;
     unit.attackDamageDelay = 25f;
-    unit.DoDamageOverride = thisUnit =>
+    unit.DoDamageOverride = () =>
     {
-      var fireball = this.SpawnProjectile(thisUnit.position, ProjectileType.Fireball, thisUnit.attackTarget);
-      fireball.damage = unit.damage + (thisUnit.player.upgrade * 20);
+      var fireball = this.SpawnProjectile(unit.position, ProjectileType.Fireball, unit.attackTarget);
+      fireball.damage = unit.damage + (unit.player.upgrade * 20);
       fireball.speed = 5f;
       fireball.DoDamage = damage =>
       {
         fireball.target.GetUnitsWithin(3f, u =>
-          u.player.id == thisUnit.player.enemy.id
+          u.player.id == unit.player.enemy.id
         ).ForEach(u => u.TakeDamage(damage));
         fireball.target.TakeDamage(damage);
         fireball.alive = false;
@@ -194,14 +169,36 @@ public class Spawner
       thisUnit.attackTarget = units[0];
       return thisUnit.attackTarget != null;
     };
-    unit.doDuringAttackFrame = () =>
+    unit.DoDuringAttackFrame = () =>
     {
       if (unit.lastAttackedStep + 5 == unit.game.step) unit.invisible = false;
     };
-    unit.DoDamageOverride = thisUnit =>
+    unit.DoDamageOverride = () =>
     {
       unit.attackTarget.TakeDamage(unit.damage + (unit.player.upgrade * 20));
       unit.invisible = true;
+    };
+    return unit;
+  }
+
+  Unit SpawnLinker(Player player, Vector2 position)
+  {
+    var unit = this.Spawn(UnitType.Linker, player, position);
+    unit.attackRange = 8f;
+    unit.speed = 2.3f;
+    unit.AcquireTargetOverride = this.GetUnitToHeal;
+    unit.DoDamageOverride = () =>
+    {
+      var total = unit.attackTarget.health;
+      var units = unit.attackTarget.GetUnitsWithin(unit.attackRange + 1f,
+        u =>
+          u.player.id == unit.player.id &&
+          u.type != UnitType.Base
+      );
+      units.ForEach(u => total += u.health);
+      var dividedHealth = total / (units.Count + 1) + 5;
+      units.ForEach(u => u.health = dividedHealth);
+      unit.attackTarget.health = dividedHealth;
     };
     return unit;
   }
@@ -212,5 +209,36 @@ public class Spawner
     unit.game = this.game;
     this.game.units.Add(unit);
     return unit;
+  }
+
+  bool GetUnitToHeal(Unit unit)
+  {
+    if (
+      unit.attackTarget == null ||
+      unit.attackTarget.health >= unit.attackTarget.maxHealth ||
+      unit.attackTarget.health <= 0
+    )
+    {
+      var units = unit
+        .GetUnitsWithin(unit.aggroRadius)
+        .FindAll(u =>
+          u.player.id == unit.player.id &&
+          u.health < u.maxHealth &&
+          u.health > 0 &&
+          u.type != UnitType.Base
+        );
+      if (units.Count == 0) return false;
+      units
+        .Sort((unit1, unit2) =>
+        {
+          var unit1Closer =
+            Vector2.Distance(unit1.position, unit.position) <=
+            Vector2.Distance(unit2.position, unit.position);
+          if (unit1Closer) return -1;
+          else return 1;
+        });
+      unit.attackTarget = units[0];
+    }
+    return unit.attackTarget != null;
   }
 }

@@ -15,7 +15,7 @@ public class UnitComponent : MonoBehaviour
 
   public void Initialize()
   {
-    this.unit.onAttack.Add(() => this.animator.Play("Attack"));
+    this.unit.OnAttack.Add(() => this.animator.Play("Attack"));
     var renderer = this.teamColorObject.GetComponent<Renderer>();
     var color = unit.player.id == 0 ? Color.red : Color.blue;
     // renderer.material.SetColor("_TeamColor", color);
@@ -31,6 +31,7 @@ public class UnitComponent : MonoBehaviour
   void Update()
   {
     if (!this.initialized) return;
+    this.health = this.unit.health;
     this.ApplyInvisibility();
     this.healthBar.OnHealthChanged(1f * this.unit.health / this.unit.maxHealth);
     this.transform.localScale = new Vector3(1, 1, 1) * ((this.unit.player.upgrade * .1f) + 1);

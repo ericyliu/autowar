@@ -158,17 +158,21 @@ public class Game
   void Spawn()
   {
     this.players.ForEach(player =>
-      player.spawns.ForEach(spawn =>
-        Array.ForEach(player.unitsToSpawn, type =>
-        {
-          if (type != UnitType.Null)
+    {
+      if (this.units.FindAll(u => u.player.id == player.id).Count < 100)
+      {
+        player.spawns.ForEach(spawn =>
+          Array.ForEach(player.unitsToSpawn, type =>
           {
-            Unit unit = this.spawner.SpawnUnit(player, spawn, type);
-            unit.target = player.enemy.playerBase.position;
-          }
-        })
-      )
-    );
+            if (type != UnitType.Null)
+            {
+              Unit unit = this.spawner.SpawnUnit(player, spawn, type);
+              unit.target = player.enemy.playerBase.position;
+            }
+          })
+        );
+      }
+    });
   }
 
   void CleanupUnits()

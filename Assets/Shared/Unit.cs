@@ -11,6 +11,7 @@ public enum UnitType
   Priest,
   FireMage,
   Assassin,
+  Linker,
 }
 
 public class Unit
@@ -34,9 +35,9 @@ public class Unit
   public Game game;
   public Player player;
   public bool attacking = false;
-  public List<Action> onAttack = new List<Action>();
-  public Action doDuringAttackFrame;
-  public Action<Unit> DoDamageOverride;
+  public List<Action> OnAttack = new List<Action>();
+  public Action DoDuringAttackFrame;
+  public Action DoDamageOverride;
   public Func<Unit, bool> AcquireTargetOverride;
   public int lastAttackedStep = 0;
 
@@ -92,10 +93,10 @@ public class Unit
     this.attacking = true;
     if (this.game.step > this.lastAttackedStep + this.attackSpeed)
     {
-      this.onAttack.ForEach(fn => fn());
+      this.OnAttack.ForEach(fn => fn());
       this.lastAttackedStep = this.game.step;
     }
-    if (this.doDuringAttackFrame != null) this.doDuringAttackFrame();
+    if (this.DoDuringAttackFrame != null) this.DoDuringAttackFrame();
     if (this.game.step == this.lastAttackedStep + this.attackDamageDelay)
     {
       this.DoDamage();
@@ -132,7 +133,7 @@ public class Unit
 
   void DoDamage()
   {
-    if (this.DoDamageOverride != null) this.DoDamageOverride(this);
+    if (this.DoDamageOverride != null) this.DoDamageOverride();
     else this.attackTarget.TakeDamage(this.damage + (this.player.upgrade * 20));
   }
 

@@ -29,7 +29,7 @@ public class Player
     this.playerBase = game.spawner.SpawnUnit(this, baseLocation, UnitType.Base);
     this.spawns = spawns;
     this.spawnTarget = spawnTarget;
-    this.unitsToSpawn[0] = UnitType.Priest;
+    this.unitsToSpawn[0] = UnitType.Linker;
     this.unitsToSpawn[1] = UnitType.Soldier;
     this.unitsToSpawn[2] = UnitType.FireMage;
   }
