@@ -40,7 +40,7 @@ public class UnitComponent : MonoBehaviour
   void ApplyInvisibility()
   {
     if (this.unit.invisible == this.lastInvisible) return;
-    var a = this.unit.invisible ? (this.unit.player.id == this.gameComponent.id ? .3f : .1f) : 1f;
+    var a = this.unit.invisible ? (this.unit.player.id == this.gameComponent.id ? .3f : .05f) : 1f;
     Array.ForEach(gameObject.GetComponentsInChildren<Renderer>(), renderer =>
     {
       if (this.unit.invisible) StandardShaderUtils.ChangeRenderMode(renderer.material, StandardShaderUtils.BlendMode.Fade);

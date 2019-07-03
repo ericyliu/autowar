@@ -605,6 +605,8 @@ MonoBehaviour:
     type: 3}
   explosionPrefab: {fileID: 7471401600424677119, guid: a85614ab62671b847b05f24d8f2d67e4,
     type: 3}
+  smitePrefab: {fileID: 5432999311012014730, guid: 05972ad4ed2085d47a7f5f3c07ffd04f,
+    type: 3}
 --- !u!1 &91521224
 GameObject:
   m_ObjectHideFlags: 0

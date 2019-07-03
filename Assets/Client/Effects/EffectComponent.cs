@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class ExplosionComponent : MonoBehaviour
+public class EffectComponent : MonoBehaviour
 {
   public void Remove()
   {

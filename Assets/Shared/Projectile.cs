@@ -4,8 +4,10 @@ using UnityEngine;
 
 public enum ProjectileType
 {
+  Null,
   Arrow,
-  Fireball
+  Fireball,
+  Smite
 }
 
 public class Projectile

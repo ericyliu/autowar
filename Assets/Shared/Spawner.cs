@@ -123,6 +123,7 @@ public class Spawner
     unit.DoDamageOverride = thisUnit =>
     {
       thisUnit.attackTarget.Heal(thisUnit.damage + (thisUnit.player.upgrade * 20));
+      SpawnProjectile(thisUnit.attackTarget.position, ProjectileType.Smite, thisUnit.attackTarget);
     };
     return unit;
   }

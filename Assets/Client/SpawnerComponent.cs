@@ -22,6 +22,7 @@ public class SpawnerComponent : MonoBehaviour
 
   // Effects
   public GameObject explosionPrefab;
+  public GameObject smitePrefab;
 
   public UnitComponent SpawnUnit(Unit unit)
   {
@@ -57,16 +58,32 @@ public class SpawnerComponent : MonoBehaviour
 
   ProjectileComponent DecorateProjectile(ProjectileComponent projectileComponent)
   {
-    if (projectileComponent.projectile.type == ProjectileType.Fireball)
+    switch (projectileComponent.projectile.type)
     {
-      projectileComponent.projectile.OnDamageDealt.Add(() =>
-      {
-        var explosionObject = Instantiate(
-          this.explosionPrefab,
-          projectileComponent.transform.position,
-          Quaternion.identity
-        );
-      });
+      case ProjectileType.Fireball:
+        {
+          projectileComponent.projectile.OnDamageDealt.Add(() =>
+          {
+            Instantiate(
+              this.explosionPrefab,
+              projectileComponent.transform.position,
+              Quaternion.identity
+            );
+          });
+          break;
+        }
+      case ProjectileType.Smite:
+        {
+          projectileComponent.projectile.OnDamageDealt.Add(() =>
+          {
+            Instantiate(
+              this.smitePrefab,
+              projectileComponent.transform.position,
+              Quaternion.identity
+            );
+          });
+          break;
+        }
     }
     return projectileComponent;
   }
@@ -100,6 +117,7 @@ public class SpawnerComponent : MonoBehaviour
   {
     if (type == ProjectileType.Arrow) return arrowPrefab;
     if (type == ProjectileType.Fireball) return fireballPrefab;
+    if (type == ProjectileType.Smite) return smitePrefab;
     throw new Exception("No prefab exists for " + type);
   }
 }
