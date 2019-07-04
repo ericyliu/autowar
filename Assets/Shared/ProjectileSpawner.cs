@@ -32,7 +32,7 @@ public class ProjectileSpawner
 
   Projectile SpawnBaseProjectile(ProjectileType type, Vector2 position, Unit target)
   {
-    var projectile = new Projectile(this.nextId++, type, game, position, target);
+    var projectile = new Projectile(this.nextId++, type, position, target);
     this.game.projectiles.Add(projectile);
     return projectile;
   }

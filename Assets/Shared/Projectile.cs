@@ -21,14 +21,12 @@ public class Projectile
   public float speed = 10f;
   public Action<int> DoDamage;
   public List<Action> OnDamageDealt = new List<Action>();
-  Game game;
   Vector2 targetLastPosition;
 
-  public Projectile(int id, ProjectileType type, Game game, Vector2 position, Unit target)
+  public Projectile(int id, ProjectileType type, Vector2 position, Unit target)
   {
     this.id = id;
     this.type = type;
-    this.game = game;
     this.position = position;
     this.target = target;
     this.targetLastPosition = target.position;
