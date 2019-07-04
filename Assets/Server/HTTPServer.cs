@@ -44,7 +44,15 @@ public class HttpServer
     // Obtain a response object.
     HttpListenerResponse response = context.Response;
     // Construct a response.
-    string responseString = this.routes[request.Url.LocalPath]();
+    string responseString = "";
+    try
+    {
+      responseString = this.routes[request.Url.LocalPath]();
+    }
+    catch
+    {
+      responseString = "Not found";
+    }
     byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
     // Get a response stream and write the response to it.
     response.ContentLength64 = buffer.Length;
