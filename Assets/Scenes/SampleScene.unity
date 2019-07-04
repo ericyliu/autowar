@@ -585,10 +585,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameComponent: {fileID: 88920330}
+  unitMeta: {fileID: 88920333}
   healthBarsRect: {fileID: 1670301097}
   healthBarPrefab: {fileID: 839568659801583264, guid: 3a7b107ef66c4c945a41532862435864,
     type: 3}
-  unitMeta: {fileID: 0}
   arrowPrefab: {fileID: 2823731573049939284, guid: 25472c3d19cdd2d46b4bd10329e92533,
     type: 3}
   fireballPrefab: {fileID: 7428773044260697029, guid: 20ab9eda4161e5e4383b81e8e7b8a50a,

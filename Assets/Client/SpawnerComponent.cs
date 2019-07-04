@@ -5,9 +5,9 @@ using UnityEngine;
 public class SpawnerComponent : MonoBehaviour
 {
   public GameComponent gameComponent;
+  public UnitMetaComponent unitMeta;
   public RectTransform healthBarsRect;
   public GameObject healthBarPrefab;
-  public UnitMeta unitMeta;
 
   // Projectiles
   public GameObject arrowPrefab;
@@ -19,7 +19,6 @@ public class SpawnerComponent : MonoBehaviour
 
   public UnitComponent SpawnUnit(Unit unit)
   {
-    unitMeta = GetComponent<UnitMeta>();
     var prefab = unitMeta.GetUnitPrefab(unit.type);
     var unitObject = Instantiate(
       prefab,
