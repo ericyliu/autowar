@@ -105,6 +105,7 @@ GameObject:
   - component: {fileID: 5406795583181526584}
   - component: {fileID: 8976212217570492823}
   - component: {fileID: 2302826701409062223}
+  - component: {fileID: 3068146729669395016}
   m_Layer: 0
   m_Name: Smite
   m_TagString: Untagged
@@ -217,5 +218,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 94cca4bc03cb76c48b72a55a6b192fc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3068146729669395016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5432999311012014730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11e025042e7ce7d44a6f3cc4ef543619, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

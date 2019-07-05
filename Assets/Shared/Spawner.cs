@@ -186,19 +186,18 @@ public class Spawner
     var unit = this.Spawn(UnitType.Linker, player, position);
     unit.attackRange = 8f;
     unit.speed = 2.3f;
-    unit.AcquireTargetOverride = this.GetUnitToHeal;
-    unit.DoDamageOverride = () =>
+    unit.damage = 5;
+    unit.OnStartAct = () =>
     {
-      var total = unit.attackTarget.health;
-      var units = unit.attackTarget.GetUnitsWithin(unit.attackRange + 1f,
-        u =>
-          u.player.id == unit.player.id &&
-          u.type != UnitType.Base
-      );
-      units.ForEach(u => total += u.health);
-      var dividedHealth = total / (units.Count + 1) + 5;
-      units.ForEach(u => u.health = dividedHealth);
-      unit.attackTarget.health = dividedHealth;
+      if (unit.health <= 0) return;
+      unit.GetUnitsWithin(unit.attackRange, u => u.player.id == unit.player.id)
+        .ForEach(u =>
+        {
+          u.effects.RemoveAll(e => e.type == EffectType.Link);
+          var effect = new Effect(EffectType.Link);
+          effect.source = unit;
+          u.effects.Add(effect);
+        });
     };
     return unit;
   }

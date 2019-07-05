@@ -23,11 +23,13 @@ public class Unit
   public Game game;
   public Player player;
   public bool attacking = false;
+  public int lastAttackedStep = 0;
+  public List<Effect> effects = new List<Effect>();
+  public Action OnStartAct;
   public List<Action> OnAttack = new List<Action>();
   public Action DoDuringAttackFrame;
   public Action DoDamageOverride;
   public Func<Unit, bool> AcquireTargetOverride;
-  public int lastAttackedStep = 0;
 
   public Unit(int id, UnitType type, Player player, Vector2 position)
   {
@@ -46,6 +48,8 @@ public class Unit
 
   public void Act()
   {
+    this.HandleEffects();
+    if (this.OnStartAct != null) this.OnStartAct();
     if (this.Attack()) return;
     this.attacking = false;
     this.lastAttackedStep = 0;
@@ -53,8 +57,17 @@ public class Unit
     this.Move();
   }
 
-  public void TakeDamage(int damage)
+  public void TakeDamage(int damage, bool trueDamage = false)
   {
+    if (!trueDamage)
+    {
+      var linkEffect = this.effects.Find(e => e.type == EffectType.Link);
+      if (linkEffect != null && linkEffect.source.health > 0)
+      {
+        damage = damage / 2;
+        linkEffect.source.TakeDamage(damage, true);
+      }
+    }
     this.health = Math.Max(0, this.health - damage);
   }
 
@@ -72,6 +85,12 @@ public class Unit
         return passFilter && this.GetDistanceAway(unit) <= f;
       }
     );
+  }
+
+  void HandleEffects()
+  {
+    this.effects.ForEach(e => e.timeLeft--);
+    this.effects.RemoveAll(e => e.timeLeft == 0);
   }
 
   bool Attack()

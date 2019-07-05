@@ -24,16 +24,17 @@ public class Player
     List<Vector2> spawns,
     Vector2 spawnTarget
   )
-  
+
   {
     this.id = id;
     this.game = game;
     this.playerBase = game.spawner.SpawnUnit(this, baseLocation, UnitType.Base);
     this.spawns = spawns;
     this.spawnTarget = spawnTarget;
-    this.unitsToSpawn[0] = UnitType.Linker;
-    this.unitsToSpawn[1] = UnitType.Soldier;
+    this.unitsToSpawn[0] = UnitType.Assassin;
+    this.unitsToSpawn[1] = UnitType.Linker;
     this.unitsToSpawn[2] = UnitType.FireMage;
+    this.unitsToSpawn[3] = UnitType.Priest;
   }
 
 }
