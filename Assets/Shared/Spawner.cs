@@ -144,30 +144,36 @@ public class Spawner
     };
     unit.AcquireTargetOverride = thisUnit =>
     {
-      var units = thisUnit
-        .GetUnitsWithin(thisUnit.aggroRadius, u =>
-          u.player.id == thisUnit.player.enemy.id &&
-          u.health > 0 &&
-          !u.invisible
-        );
-      if (units.Count == 0)
+      // clear attackTarget and activate invisibility if target is dead
+      if (thisUnit.attackTarget != null && thisUnit.attackTarget.health <= 0)
       {
+        thisUnit.invisible = true;
         thisUnit.attackTarget = null;
-        return false;
       }
-      units
-        .Sort((unit1, unit2) =>
-        {
-          var unit1Priority = priorityList.IndexOf(unit1.type);
-          var unit2Priority = priorityList.IndexOf(unit2.type);
-          if (unit1Priority > unit2Priority) return -1;
-          if (unit1Priority < unit2Priority) return 1;
-          var unit1Closer = Vector2.Distance(unit1.position, unit.position) <= Vector2.Distance(unit2.position, unit.position);
-          if (unit1Closer) return -1;
-          else return 1;
-        });
-      thisUnit.attackTarget = units[0];
-      return thisUnit.attackTarget != null;
+      if (thisUnit.attackTarget == null)
+      {
+        var units = thisUnit
+          .GetUnitsWithin(thisUnit.aggroRadius, u =>
+            u.player.id == thisUnit.player.enemy.id &&
+            u.health > 0 &&
+            !u.invisible
+          );
+        if (units.Count == 0) return false;
+        units
+          .Sort((unit1, unit2) =>
+          {
+            var unit1Priority = priorityList.IndexOf(unit1.type);
+            var unit2Priority = priorityList.IndexOf(unit2.type);
+            if (unit1Priority > unit2Priority) return -1;
+            if (unit1Priority < unit2Priority) return 1;
+            var unit1Closer = Vector2.Distance(unit1.position, unit.position) <= Vector2.Distance(unit2.position, unit.position);
+            if (unit1Closer) return -1;
+            else return 1;
+          });
+        thisUnit.attackTarget = units[0];
+        return thisUnit.attackTarget != null;
+      }
+      return true;
     };
     unit.DoDuringAttackFrame = () =>
     {
@@ -176,7 +182,6 @@ public class Spawner
     unit.DoDamageOverride = () =>
     {
       unit.attackTarget.TakeDamage(unit.damage + (unit.player.upgrade * 20));
-      unit.invisible = true;
     };
     return unit;
   }

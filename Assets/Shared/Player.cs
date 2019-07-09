@@ -34,7 +34,7 @@ public class Player
     this.unitsToSpawn[0] = UnitType.Assassin;
     this.unitsToSpawn[1] = UnitType.Linker;
     this.unitsToSpawn[2] = UnitType.FireMage;
-    this.unitsToSpawn[3] = UnitType.Priest;
+    this.unitsToSpawn[3] = UnitType.Soldier;
   }
 
 }
