@@ -191,7 +191,7 @@ public class Spawner
     var unit = this.Spawn(UnitType.Linker, player, position);
     unit.attackRange = 8f;
     unit.speed = 2.3f;
-    unit.damage = 5;
+    unit.damage = 0;
     unit.OnStartAct = () =>
     {
       if (unit.health <= 0) return;
