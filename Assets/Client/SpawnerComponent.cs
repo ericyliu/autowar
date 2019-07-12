@@ -1,9 +1,13 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnerComponent : MonoBehaviour
 {
+  public static string GetUnitObjectName(Unit unit)
+  {
+    return unit.id + ": " + unit.type;
+  }
+
   public GameComponent gameComponent;
   public UnitMetaComponent unitMeta;
   public RectTransform healthBarsRect;
@@ -16,6 +20,7 @@ public class SpawnerComponent : MonoBehaviour
   // Effects
   public GameObject explosionPrefab;
   public GameObject smitePrefab;
+  public GameObject linkEffectPrefab;
 
   public UnitComponent SpawnUnit(Unit unit)
   {
@@ -25,12 +30,20 @@ public class SpawnerComponent : MonoBehaviour
       VectorUtil.Vector2To3(unit.position, unit.height),
       Quaternion.identity
     );
-    unitObject.name = unit.id + ": " + unit.type;
+    unitObject.name = SpawnerComponent.GetUnitObjectName(unit);
     var unitComponent = unitObject.GetComponent<UnitComponent>();
     unitComponent.unit = unit;
     unitComponent.gameComponent = this.gameComponent;
     unitComponent.Initialize();
     unitComponent.healthBar = this.AttachHealthBar(unitObject, unit);
+    unit.OnLinkEffect = (Unit source, Unit target) =>
+    {
+      Instantiate(
+        this.gameComponent.spawnerComponent.linkEffectPrefab,
+        VectorUtil.Vector2To3(source.position, source.height),
+        Quaternion.identity
+      ).GetComponent<LinkEffectComponent>().Initialize(target);
+    };
     return unitComponent;
   }
 

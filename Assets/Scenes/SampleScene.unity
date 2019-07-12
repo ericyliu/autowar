@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657892, g: 0.4964127, b: 0.5748172, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -596,6 +596,8 @@ MonoBehaviour:
   explosionPrefab: {fileID: 7471401600424677119, guid: a85614ab62671b847b05f24d8f2d67e4,
     type: 3}
   smitePrefab: {fileID: 5432999311012014730, guid: 05972ad4ed2085d47a7f5f3c07ffd04f,
+    type: 3}
+  linkEffectPrefab: {fileID: 6637379969768517985, guid: 831863df483745c48ac028c4007a9a9c,
     type: 3}
 --- !u!114 &88920333
 MonoBehaviour:

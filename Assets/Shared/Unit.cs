@@ -27,6 +27,7 @@ public class Unit
   public List<Effect> effects = new List<Effect>();
   public Action OnStartAct;
   public List<Action> OnAttack = new List<Action>();
+  public Action<Unit, Unit> OnLinkEffect;
   public Action DoDuringAttackFrame;
   public Action DoDamageOverride;
   public Func<Unit, bool> AcquireTargetOverride;
@@ -66,6 +67,7 @@ public class Unit
       {
         damage = damage / 2;
         linkEffect.source.TakeDamage(damage, true);
+        if (this.OnLinkEffect != null) this.OnLinkEffect(this, linkEffect.source);
       }
     }
     this.health = Math.Max(0, this.health - damage);
