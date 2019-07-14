@@ -7,7 +7,8 @@ public enum ProjectileType
   Null,
   Arrow,
   Fireball,
-  Smite
+  Smite,
+  SniperShot
 }
 
 public class Projectile

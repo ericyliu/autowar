@@ -45,6 +45,9 @@ public class Spawner
       case UnitType.Linker:
         unit = this.SpawnLinker(player, position);
         break;
+      case UnitType.Sniper:
+        unit = this.SpawnSniper(player, position);
+        break;
     }
     if (unit == null) throw new Exception("unit type " + type + " not defined in spawner");
     unit.Initialize();
@@ -201,6 +204,22 @@ public class Spawner
           effect.source = unit;
           u.effects.Add(effect);
         });
+    };
+    return unit;
+  }
+
+  Unit SpawnSniper(Player player, Vector2 position)
+  {
+    var unit = this.Spawn(UnitType.Linker, player, position);
+    unit.attackRange = 8f;
+    unit.speed = 2.3f;
+    unit.damage = 30;
+    unit.attackSpeed = 35;
+    unit.attackDamageDelay = 15;
+    unit.DoDamageOverride = () =>
+    {
+      var bullet = this.SpawnProjectile(unit.position, ProjectileType.SniperShot, unit.attackTarget);
+      bullet.damage = unit.damage + (unit.player.upgrade * 20);
     };
     return unit;
   }

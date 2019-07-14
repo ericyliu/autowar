@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class Player
 {
-
   public static int UNIT_SLOTS = 4;
   public int id;
   public List<Vector2> spawns = new List<Vector2>();
@@ -24,7 +23,6 @@ public class Player
     List<Vector2> spawns,
     Vector2 spawnTarget
   )
-
   {
     this.id = id;
     this.game = game;
@@ -34,5 +32,4 @@ public class Player
     this.unitsToSpawn[0] = UnitType.Soldier;
     this.unitsToSpawn[1] = UnitType.Linker;
   }
-
 }

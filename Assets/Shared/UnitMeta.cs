@@ -8,4 +8,5 @@
   FireMage,
   Assassin,
   Linker,
+  Sniper,
 }
