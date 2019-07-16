@@ -2,14 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ProjectileType
-{
-  Null,
-  Arrow,
-  Fireball,
-  Smite,
-  SniperShot
-}
 
 public class Projectile
 {
