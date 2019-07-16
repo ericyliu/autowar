@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public enum ProjectileType
 {
   Null,
@@ -29,14 +31,12 @@ public class ProjectileMeta
       case ProjectileType.SniperShot:
         projectile.speed = 15f;
         projectile.damage = projectile.source.damage + (projectile.source.player.upgrade * 20);
+        projectile.targetPosition = projectile.source.position + ((projectile.target.position - projectile.source.position).normalized * 20f);
         projectile.OnCheckHit = targetPosition =>
         {
-          if (projectile.distanceTraveled > 100f) projectile.alive = false;
-          else
-          {
-            var units = projectile.GetUnitsWithin(1f, u => u.player.id == projectile.source.player.enemy.id);
-            units.ForEach(u => u.TakeDamage(projectile.damage));
-          }
+          var units = projectile.GetUnitsWithin(1f, u => u.player.id == projectile.source.player.enemy.id);
+          units.ForEach(u => u.TakeDamage(projectile.damage));
+          if (Vector2.Distance(targetPosition, projectile.position) < 1f) projectile.alive = false;
         };
         break;
     }

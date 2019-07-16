@@ -10,9 +10,9 @@ public class Projectile
   public int damage = 30;
   public bool alive = true;
   public Vector2 position = Vector2.zero;
-  public float distanceTraveled = 0f;
   public Unit source;
   public Unit target;
+  public Vector2 targetPosition;
   public float speed = 10f;
   public Action<int> DoDamage;
   public List<Action> OnDamageDealt = new List<Action>();
@@ -31,13 +31,12 @@ public class Projectile
 
   public void Act()
   {
-    var targetPosition = this.target.health > 0 ? this.target.position : this.targetLastPosition;
-    if (this.OnCheckHit != null) this.OnCheckHit(targetPosition);
-    else this.DefaultCheckHit(targetPosition);
-    var direction = targetPosition - this.position;
+    var currentTargetPosition = this.GetTargetPosition();
+    if (this.OnCheckHit != null) this.OnCheckHit(currentTargetPosition);
+    else this.DefaultCheckHit(currentTargetPosition);
+    var direction = currentTargetPosition - this.position;
     var travelVector = direction.normalized * speed / 10;
     this.position += travelVector;
-    this.distanceTraveled += travelVector.magnitude;
     this.targetLastPosition = this.target.position;
   }
 
@@ -50,6 +49,13 @@ public class Projectile
         return passFilter && distanceAway <= f;
       }
     );
+  }
+
+  Vector2 GetTargetPosition()
+  {
+    if (this.targetPosition != null) return this.targetPosition;
+    if (this.target.health > 0) return this.target.position;
+    return this.targetLastPosition;
   }
 
   void DefaultCheckHit(Vector2 targetPosition)

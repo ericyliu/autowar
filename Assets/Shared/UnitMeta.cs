@@ -63,6 +63,7 @@ public class UnitMeta
         UnitMeta.DecorateLinker(unit);
         break;
       case UnitType.Sniper:
+        UnitMeta.DecorateSniper(unit, spawner);
         break;
     }
     return unit;
@@ -194,9 +195,9 @@ public class UnitMeta
   {
     unit.attackRange = 8f;
     unit.speed = 2.3f;
-    unit.damage = 30;
-    unit.attackSpeed = 35;
-    unit.attackDamageDelay = 15;
+    unit.damage = 40;
+    unit.attackSpeed = 60;
+    unit.attackDamageDelay = 5;
     unit.DoDamageOverride = () =>
     {
       spawner.SpawnProjectile(unit.position, ProjectileType.SniperShot, unit, unit.attackTarget);

@@ -16,6 +16,7 @@ public class SpawnerComponent : MonoBehaviour
   // Projectiles
   public GameObject arrowPrefab;
   public GameObject fireballPrefab;
+  public GameObject sniperShotPrefab;
 
   // Effects
   public GameObject explosionPrefab;
@@ -113,6 +114,7 @@ public class SpawnerComponent : MonoBehaviour
     if (type == ProjectileType.Arrow) return arrowPrefab;
     if (type == ProjectileType.Fireball) return fireballPrefab;
     if (type == ProjectileType.Smite) return smitePrefab;
+    if (type == ProjectileType.SniperShot) return sniperShotPrefab;
     throw new Exception("No prefab exists for " + type);
   }
 }

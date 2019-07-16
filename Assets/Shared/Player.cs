@@ -30,6 +30,7 @@ public class Player
     this.spawns = spawns;
     this.spawnTarget = spawnTarget;
     this.unitsToSpawn[0] = UnitType.Soldier;
-    this.unitsToSpawn[1] = UnitType.Linker;
+    this.unitsToSpawn[1] = UnitType.Soldier;
+    this.unitsToSpawn[2] = UnitType.Sniper;
   }
 }

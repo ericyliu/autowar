@@ -12,6 +12,7 @@ public class UnitMetaComponent : MonoBehaviour
   public GameObject firemagePrefab;
   public GameObject assassinPrefab;
   public GameObject linkerPrefab;
+  public GameObject sniperPrefab;
 
   public static List<UnitType> GetBuyableUnits()
   {
@@ -21,19 +22,21 @@ public class UnitMetaComponent : MonoBehaviour
       UnitType.Priest,
       UnitType.FireMage,
       UnitType.Assassin,
-      UnitType.Linker
+      UnitType.Linker,
+      UnitType.Sniper
     };
   }
 
   public GameObject GetUnitPrefab(UnitType type)
   {
     if (type == UnitType.Base) return basePrefab;
-    else if (type == UnitType.Soldier) return soldierPrefab;
-    else if (type == UnitType.Archer) return archerPrefab;
-    else if (type == UnitType.Priest) return priestPrefab;
-    else if (type == UnitType.FireMage) return firemagePrefab;
-    else if (type == UnitType.Assassin) return assassinPrefab;
-    else if (type == UnitType.Linker) return linkerPrefab;
+    if (type == UnitType.Soldier) return soldierPrefab;
+    if (type == UnitType.Archer) return archerPrefab;
+    if (type == UnitType.Priest) return priestPrefab;
+    if (type == UnitType.FireMage) return firemagePrefab;
+    if (type == UnitType.Assassin) return assassinPrefab;
+    if (type == UnitType.Linker) return linkerPrefab;
+    if (type == UnitType.Sniper) return sniperPrefab;
     throw new Exception("No prefab exists for " + type);
   }
 }
