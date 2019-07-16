@@ -193,11 +193,11 @@ public class UnitMeta
 
   static Unit DecorateSniper(Unit unit, Spawner spawner)
   {
-    unit.attackRange = 8f;
+    unit.attackRange = 12f;
     unit.speed = 2.3f;
     unit.damage = 40;
-    unit.attackSpeed = 60;
-    unit.attackDamageDelay = 5;
+    unit.attackSpeed = 55;
+    unit.attackDamageDelay = 15;
     unit.DoDamageOverride = () =>
     {
       spawner.SpawnProjectile(unit.position, ProjectileType.SniperShot, unit, unit.attackTarget);

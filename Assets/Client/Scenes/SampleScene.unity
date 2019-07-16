@@ -593,7 +593,7 @@ MonoBehaviour:
     type: 3}
   fireballPrefab: {fileID: 7428773044260697029, guid: 20ab9eda4161e5e4383b81e8e7b8a50a,
     type: 3}
-  sniperShotPrefab: {fileID: 2823731573049939284, guid: 25472c3d19cdd2d46b4bd10329e92533,
+  sniperShotPrefab: {fileID: 5954770214735643489, guid: 27f69d7da42f74041bb03ad888835861,
     type: 3}
   explosionPrefab: {fileID: 7471401600424677119, guid: a85614ab62671b847b05f24d8f2d67e4,
     type: 3}
@@ -627,7 +627,7 @@ MonoBehaviour:
     type: 3}
   linkerPrefab: {fileID: 2332762275719587042, guid: 9d7dca259ba5d44798a00c6fbd7948c3,
     type: 3}
-  sniperPrefab: {fileID: 5895252774645588607, guid: 56132cbc02b04ad4882821fdd8aad1ff,
+  sniperPrefab: {fileID: 431432179453688546, guid: c7818bf95267ba043995228b1b8d84ca,
     type: 3}
 --- !u!1 &91521224
 GameObject:
@@ -4315,7 +4315,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: -8.6931086e-38}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0

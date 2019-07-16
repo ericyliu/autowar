@@ -31,7 +31,7 @@ public class ProjectileMeta
       case ProjectileType.SniperShot:
         projectile.speed = 15f;
         projectile.damage = projectile.source.damage + (projectile.source.player.upgrade * 20);
-        projectile.targetPosition = projectile.source.position + ((projectile.target.position - projectile.source.position).normalized * 20f);
+        projectile.targetPosition = projectile.source.position + ((projectile.target.position - projectile.source.position).normalized * 25f);
         projectile.OnCheckHit = targetPosition =>
         {
           var units = projectile.GetUnitsWithin(1f, u => u.player.id == projectile.source.player.enemy.id);
