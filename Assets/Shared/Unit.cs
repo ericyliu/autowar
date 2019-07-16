@@ -30,7 +30,7 @@ public class Unit
   public Action<Unit, Unit> OnLinkEffect;
   public Action DoDuringAttackFrame;
   public Action DoDamageOverride;
-  public Func<Unit, bool> AcquireTargetOverride;
+  public Func<bool> AcquireTargetOverride;
 
   public Unit(int id, UnitType type, Player player, Vector2 position)
   {
@@ -73,20 +73,20 @@ public class Unit
     this.health = Math.Max(0, this.health - damage);
   }
 
+  public List<Unit> GetUnitsWithin(float f, Func<Unit, bool> filter = null)
+  {
+    return this.game.units.FindAll(u =>
+      {
+        if (this == u) return false;
+        var passFilter = filter == null || filter(u);
+        return passFilter && this.GetDistanceAway(u) <= f;
+      }
+    );
+  }
+
   public void Heal(int damage)
   {
     this.health = Math.Min(this.maxHealth, this.health + damage);
-  }
-
-  public List<Unit> GetUnitsWithin(float f, Func<Unit, bool> filter = null)
-  {
-    return this.game.units.FindAll(unit =>
-      {
-        if (unit == this) return false;
-        var passFilter = filter == null || filter(unit);
-        return passFilter && this.GetDistanceAway(unit) <= f;
-      }
-    );
   }
 
   void HandleEffects()
@@ -115,7 +115,7 @@ public class Unit
 
   bool AcquireTarget()
   {
-    if (this.AcquireTargetOverride != null) return this.AcquireTargetOverride(this);
+    if (this.AcquireTargetOverride != null) return this.AcquireTargetOverride();
     if (this.attackTarget == null || this.attackTarget.health <= 0 || this.attackTarget.invisible)
     {
       var units = this.GetUnitsWithin(this.aggroRadius, unit =>

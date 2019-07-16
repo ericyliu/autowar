@@ -13,8 +13,31 @@ public class ProjectileMeta
   {
     switch (projectile.type)
     {
+      case ProjectileType.Arrow:
+        projectile.damage = projectile.source.damage + (projectile.source.player.upgrade * 20);
+        break;
+      case ProjectileType.Fireball:
+        projectile.damage = projectile.source.damage + (projectile.source.player.upgrade * 20);
+        projectile.speed = 5f;
+        projectile.DoDamage = damage =>
+        {
+          projectile.source.GetUnitsWithin(3f).ForEach(u => u.TakeDamage(damage));
+          projectile.target.TakeDamage(damage);
+          projectile.alive = false;
+        };
+        break;
       case ProjectileType.SniperShot:
         projectile.speed = 15f;
+        projectile.damage = projectile.source.damage + (projectile.source.player.upgrade * 20);
+        projectile.OnCheckHit = targetPosition =>
+        {
+          if (projectile.distanceTraveled > 100f) projectile.alive = false;
+          else
+          {
+            var units = projectile.GetUnitsWithin(1f, u => u.player.id == projectile.source.player.enemy.id);
+            units.ForEach(u => u.TakeDamage(projectile.damage));
+          }
+        };
         break;
     }
     return projectile;
