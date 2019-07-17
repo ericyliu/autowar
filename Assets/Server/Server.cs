@@ -162,7 +162,7 @@ public class GameWebObject
         alivePlayerHandlers.ForEach(playerHandler =>
           PublishToPlayer(playerHandler, nextStep)
         );
-        Thread.Sleep(50);
+        Thread.Sleep(16);
       }
       Console.WriteLine("Closing game");
     }

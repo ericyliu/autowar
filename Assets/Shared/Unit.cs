@@ -13,13 +13,15 @@ public class Unit
   public float attackSpeed = 25;
   public float attackDamageDelay = 18;
   public float aggroRadius = 10f;
-  public float speed = 3f;
+  public float speed = 1f;
   public float size = 1.5f;
   public float height = 1f;
   public int maxHealth = 100;
   public int health = 100;
   public int damage = 20;
   public bool invisible = false;
+  public int decayTime = 360;
+  public int deathTurn = 0;
   public Game game;
   public Player player;
   public bool attacking = false;
@@ -49,6 +51,7 @@ public class Unit
 
   public void Act()
   {
+    if (this.health == 0) return;
     this.HandleEffects();
     if (this.OnStartAct != null) this.OnStartAct();
     if (this.Attack()) return;
@@ -71,6 +74,8 @@ public class Unit
       }
     }
     this.health = Math.Max(0, this.health - damage);
+    if (this.health == 0) this.deathTurn = this.game.turn;
+
   }
 
   public List<Unit> GetUnitsWithin(float f, Func<Unit, bool> filter = null)
@@ -100,13 +105,13 @@ public class Unit
     if (!this.AcquireTarget()) return false;
     if (this.GetDistanceAway(this.attackTarget) > this.attackRange) return false;
     this.attacking = true;
-    if (this.game.step > this.lastAttackedStep + this.attackSpeed)
+    if (this.game.turn > this.lastAttackedStep + this.attackSpeed)
     {
       this.OnAttack.ForEach(fn => fn());
-      this.lastAttackedStep = this.game.step;
+      this.lastAttackedStep = this.game.turn;
     }
     if (this.DoDuringAttackFrame != null) this.DoDuringAttackFrame();
-    if (this.game.step == this.lastAttackedStep + this.attackDamageDelay)
+    if (this.game.turn == this.lastAttackedStep + this.attackDamageDelay)
     {
       this.DoDamage();
     }
@@ -148,13 +153,15 @@ public class Unit
 
   bool ShouldStop()
   {
+    // stop if close to target
     if (Vector2.Distance(this.position, this.target) <= this.size) return true;
+    // stop if future position is around the same as current
     Vector2 futurePosition = this.position;
     for (int i = 0; i < 20; i++)
     {
       futurePosition = GetNextPosition(futurePosition, this.target);
     }
-    if (Vector2.Distance(futurePosition, this.position) < this.size * 2f) return true;
+    if (Vector2.Distance(futurePosition, this.position) < this.size * 1f) return true;
     return false;
   }
 
@@ -168,7 +175,7 @@ public class Unit
   {
     Vector2 move = (target - position).normalized;
     move = GetMoveWithCollision(move, position);
-    return position + (move * this.speed / 10);
+    return position + (move * (this.speed / 7f));
   }
 
   Vector2 GetMoveWithCollision(Vector2 move, Vector2 position)

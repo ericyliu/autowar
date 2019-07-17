@@ -27,10 +27,10 @@ public class UnitMeta
         unit.maxHealth = 1000;
         break;
       case UnitType.Soldier:
-        unit.speed = 3f;
+        unit.speed = 1f;
         break;
       case UnitType.Archer:
-        unit.speed = 2.5f;
+        unit.speed = .8f;
         unit.maxHealth = 60;
         unit.attackRange = 8f;
         unit.damage = 30;
@@ -45,7 +45,7 @@ public class UnitMeta
         UnitMeta.DecoratePriest(unit, spawner);
         break;
       case UnitType.FireMage:
-        unit.speed = 2f;
+        unit.speed = .6f;
         unit.maxHealth = 50;
         unit.attackRange = 11f;
         unit.damage = 30;
@@ -71,7 +71,7 @@ public class UnitMeta
 
   static Unit DecoratePriest(Unit unit, Spawner spawner)
   {
-    unit.speed = 2.5f;
+    unit.speed = .8f;
     unit.maxHealth = 50;
     unit.attackRange = 9f;
     unit.damage = 10;
@@ -117,7 +117,7 @@ public class UnitMeta
 
   static Unit DecorateAssassin(Unit unit)
   {
-    unit.speed = 2.5f;
+    unit.speed = .7f;
     unit.maxHealth = 70;
     unit.damage = 50;
     unit.attackSpeed = 50;
@@ -156,13 +156,12 @@ public class UnitMeta
             else return 1;
           });
         unit.attackTarget = units[0];
-        return unit.attackTarget != null;
       }
-      return true;
+      return unit.attackTarget != null;
     };
     unit.DoDuringAttackFrame = () =>
     {
-      if (unit.lastAttackedStep + 5 == unit.game.step) unit.invisible = false;
+      if (unit.lastAttackedStep + 5 == unit.game.turn) unit.invisible = false;
     };
     unit.DoDamageOverride = () =>
     {
@@ -174,7 +173,7 @@ public class UnitMeta
   static Unit DecorateLinker(Unit unit)
   {
     unit.attackRange = 8f;
-    unit.speed = 2.3f;
+    unit.speed = .6f;
     unit.damage = 0;
     unit.OnStartAct = () =>
     {
@@ -194,13 +193,32 @@ public class UnitMeta
   static Unit DecorateSniper(Unit unit, Spawner spawner)
   {
     unit.attackRange = 12f;
-    unit.speed = 2.3f;
+    unit.speed = .6f;
     unit.damage = 40;
     unit.attackSpeed = 55;
     unit.attackDamageDelay = 15;
     unit.DoDamageOverride = () =>
     {
       spawner.SpawnProjectile(unit.position, ProjectileType.SniperShot, unit, unit.attackTarget);
+    };
+    return unit;
+  }
+
+  static Unit DecorateNecromancer(Unit unit)
+  {
+    unit.attackRange = 8f;
+    unit.speed = .6f;
+    unit.damage = 0;
+    unit.attackSpeed = 55;
+    unit.attackDamageDelay = 15f;
+    unit.AcquireTargetOverride = () =>
+    {
+      if (unit.attackTarget == null)
+      {
+        var targets = unit.GetUnitsWithin(unit.attackRange, u => u.health == 0);
+        if (targets.Count > 0) unit.attackTarget = targets[0];
+      }
+      return unit.attackTarget != null;
     };
     return unit;
   }

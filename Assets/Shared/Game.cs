@@ -28,7 +28,7 @@ public class Game
   public List<GameStep> steps = new List<GameStep>();
   public List<GameAction> actions = new List<GameAction>();
   public Spawner spawner;
-  public int step = 0;
+  public int turn = 0;
 
   public Game()
   {
@@ -59,13 +59,13 @@ public class Game
 
   public GameStep Step(GameStep step = null)
   {
-    if (step != null && step.id != this.step)
+    if (step != null && step.id != this.turn)
     {
-      throw new Exception("Step count off\nawaiting:" + this.step + ", incoming: " + step.id);
+      throw new Exception("Step count off\nawaiting:" + this.turn + ", incoming: " + step.id);
     }
     if (step == null)
     {
-      step = new GameStep(this.step, this.actions);
+      step = new GameStep(this.turn, this.actions);
       this.steps.Add(step);
       this.actions = new List<GameAction>();
     }
@@ -93,13 +93,13 @@ public class Game
     foreach (var unit in this.units) unit.Act();
     this.CleanupUnits();
     this.CleanupProjectiles();
-    this.step++;
+    this.turn++;
     return step;
   }
 
   public override string ToString()
   {
-    return "Turn: " + this.step;
+    return "Turn: " + this.turn;
   }
 
   void BuyWorker(Player player)
