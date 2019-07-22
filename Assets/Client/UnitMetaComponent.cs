@@ -14,19 +14,6 @@ public class UnitMetaComponent : MonoBehaviour
   public GameObject linkerPrefab;
   public GameObject sniperPrefab;
 
-  public static List<UnitType> GetBuyableUnits()
-  {
-    return new List<UnitType>(){
-      UnitType.Soldier,
-      UnitType.Archer,
-      UnitType.Priest,
-      UnitType.FireMage,
-      UnitType.Assassin,
-      UnitType.Linker,
-      UnitType.Sniper
-    };
-  }
-
   public GameObject GetUnitPrefab(UnitType type)
   {
     if (type == UnitType.Base) return basePrefab;

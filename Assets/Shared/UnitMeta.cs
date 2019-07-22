@@ -16,6 +16,55 @@ public enum UnitType
 
 public class UnitMeta
 {
+  public static List<UnitType> GetBuyableUnits(UnitType current)
+  {
+    var buyable = new List<UnitType>(){
+      UnitType.Soldier,
+      UnitType.Archer,
+      UnitType.Priest
+    };
+    switch (current)
+    {
+      case UnitType.Soldier:
+        buyable.Add(UnitType.Assassin);
+        break;
+      case UnitType.Archer:
+        buyable.Add(UnitType.Sniper);
+        break;
+      case UnitType.Priest:
+        buyable.Add(UnitType.Linker);
+        buyable.Add(UnitType.FireMage);
+        break;
+    }
+    return buyable;
+  }
+
+  public static int GetBuyUnitCost(UnitType type)
+  {
+    int price = 0;
+    switch (type)
+    {
+      case UnitType.Soldier:
+      case UnitType.Archer:
+      case UnitType.Priest:
+        price = 100;
+        break;
+      case UnitType.Assassin:
+        price = 300;
+        break;
+      case UnitType.Sniper:
+        price = 300;
+        break;
+      case UnitType.FireMage:
+        price = 400;
+        break;
+      case UnitType.Linker:
+        price = 300;
+        break;
+    }
+    return price;
+  }
+
   public static Unit Decorate(Unit unit, Spawner spawner)
   {
     switch (unit.type)

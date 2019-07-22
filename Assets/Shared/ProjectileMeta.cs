@@ -23,7 +23,9 @@ public class ProjectileMeta
         projectile.speed = 5f;
         projectile.DoDamage = damage =>
         {
-          projectile.source.GetUnitsWithin(3f).ForEach(u => u.TakeDamage(damage));
+          projectile.source
+            .GetUnitsWithin(3f, u => u.player.id == projectile.source.player.enemy.id)
+            .ForEach(u => u.TakeDamage(damage));
           projectile.target.TakeDamage(damage);
           projectile.alive = false;
         };

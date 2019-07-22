@@ -73,13 +73,13 @@ public class UI : MonoBehaviour
     this.CloseShop();
     var row = this.innerShopPanel.GetChild(slot).Find("RowContainer");
     var buyableUnitList = row.Find("Units");
-    UnitMetaComponent.GetBuyableUnits().ForEach(type =>
+    UnitMeta.GetBuyableUnits(this.gameComponent.player.unitsToSpawn[slot]).ForEach(type =>
     {
       if (type == this.gameComponent.player.unitsToSpawn[slot]) return;
       var button = Instantiate(this.buyUnitButtonPrefab, buyableUnitList).GetComponent<Button>();
       button.onClick.AddListener(() => this.BuyUnit(slot, type));
-      button.interactable = this.gameComponent.player.gold >= Game.GetBuyUnitCost(type);
-      this.SetButtonText(button, type.ToString() + " (" + Game.GetBuyUnitCost(type) + ")");
+      button.interactable = this.gameComponent.player.gold >= UnitMeta.GetBuyUnitCost(type);
+      this.SetButtonText(button, type.ToString() + " (" + UnitMeta.GetBuyUnitCost(type) + ")");
       this.buyUnitButtons.Add(new BuyUnitButton(button, type));
     });
     row.gameObject.SetActive(true);
@@ -146,7 +146,7 @@ public class UI : MonoBehaviour
         (buttonTransform as RectTransform).sizeDelta = new Vector2(160, 50);
       }
     }
-    this.buyUnitButtons.ForEach(bub => bub.button.interactable = player.gold >= Game.GetBuyUnitCost(bub.type));
+    this.buyUnitButtons.ForEach(bub => bub.button.interactable = player.gold >= UnitMeta.GetBuyUnitCost(bub.type));
   }
 
   void BuyUnit(int slot, UnitType type)
