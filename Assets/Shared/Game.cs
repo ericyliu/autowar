@@ -8,6 +8,7 @@ public class Game
   public const int GOLD_RATE = 50;
   public const int WORKER_COST = 100;
   public const int UPGRADE_COST = 500;
+  public const int MAX_UNIT_COUNT = 50;
 
   public static int GetBuyWorkerCost(Player player)
   {
@@ -150,7 +151,7 @@ public class Game
   {
     this.players.ForEach(player =>
     {
-      if (this.units.FindAll(u => u.player.id == player.id).Count < 100)
+      if (this.units.FindAll(u => u.player.id == player.id).Count < Game.MAX_UNIT_COUNT)
       {
         player.spawns.ForEach(spawn =>
           Array.ForEach(player.unitsToSpawn, type =>

@@ -53,7 +53,7 @@ public class Projectile
 
   Vector2 GetTargetPosition()
   {
-    if (this.targetPosition != null) return this.targetPosition;
+    if (!this.targetPosition.Equals(Vector2.zero)) return this.targetPosition;
     if (this.target.health > 0) return this.target.position;
     return this.targetLastPosition;
   }
