@@ -85,8 +85,8 @@ public class Game
           break;
       }
     }
-    if (step.id > 0 && step.id % Game.SPAWN_RATE == 0) Spawn();
-    if (step.id > 0 && step.id % Game.GOLD_RATE == 0) GiveGold();
+    if (step.id % Game.SPAWN_RATE == 0) Spawn();
+    if (step.id % Game.GOLD_RATE == 0) GiveGold();
     foreach (var projectile in this.projectiles) projectile.Act();
     foreach (var unit in this.units) unit.Act();
     this.CleanupUnits();
