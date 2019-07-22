@@ -7,6 +7,7 @@ using System.Threading;
 public class Server
 {
   public static bool localhost = false;
+  public static int STEP_TIME = 50;
 
   static void Main(string[] args)
   {
@@ -162,7 +163,7 @@ public class GameWebObject
         alivePlayerHandlers.ForEach(playerHandler =>
           PublishToPlayer(playerHandler, nextStep)
         );
-        Thread.Sleep(16);
+        Thread.Sleep(Server.STEP_TIME);
       }
       Console.WriteLine("Closing game");
     }

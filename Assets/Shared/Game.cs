@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Game
 {
+  public const int SPAWN_RATE = 250;
+  public const int GOLD_RATE = 50;
   public const int WORKER_COST = 100;
   public const int UPGRADE_COST = 500;
 
@@ -87,8 +89,8 @@ public class Game
           break;
       }
     }
-    if (step.id % 100 == 0) Spawn();
-    if (step.id % 20 == 0) GiveGold();
+    if (step.id > 0 && step.id % Game.SPAWN_RATE == 0) Spawn();
+    if (step.id > 0 && step.id % Game.GOLD_RATE == 0) GiveGold();
     foreach (var projectile in this.projectiles) projectile.Act();
     foreach (var unit in this.units) unit.Act();
     this.CleanupUnits();

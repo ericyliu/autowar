@@ -175,7 +175,7 @@ public class Unit
   {
     Vector2 move = (target - position).normalized;
     move = GetMoveWithCollision(move, position);
-    return position + (move * (this.speed / 7f));
+    return position + (move * (this.speed / 3f));
   }
 
   Vector2 GetMoveWithCollision(Vector2 move, Vector2 position)
