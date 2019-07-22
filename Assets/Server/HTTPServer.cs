@@ -6,14 +6,15 @@ using System.Threading;
 public class HttpServer
 {
   public Server server;
-  public Dictionary<string, Func<string>> routes = new Dictionary<string, Func<string>>();
+  public Dictionary<string, Func<HttpListenerRequest, string>> routes = new Dictionary<string, Func<HttpListenerRequest, string>>();
   HttpListener listener;
 
   public HttpServer(Server server)
   {
     this.server = server;
     this.routes.Add("/", this.GetServerState);
-    this.routes.Add("/favicon.ico", () => "Not found");
+    this.routes.Add("/join-game", this.JoinGame);
+    this.routes.Add("/favicon.ico", (HttpListenerRequest request) => "Not found");
   }
 
   public void Start()
@@ -47,7 +48,7 @@ public class HttpServer
     string responseString = "";
     try
     {
-      responseString = this.routes[request.Url.LocalPath]();
+      responseString = this.routes[request.Url.LocalPath](request);
     }
     catch
     {
@@ -62,11 +63,16 @@ public class HttpServer
     output.Close();
   }
 
-  string GetServerState()
+  string GetServerState(HttpListenerRequest request)
   {
     var state = "";
     state += "AutoWar Status Panel\n\n";
     this.server.gameWebObjects.ForEach(gwo => state += gwo.ToString() + "\n");
     return state;
+  }
+
+  string JoinGame(HttpListenerRequest request)
+  {
+    return this.server.AddPlayer(request.RemoteEndPoint.ToString()).ToString();
   }
 }

@@ -28,7 +28,6 @@ public class Server
   }
 
   public Socket listener;
-  List<PlayerHandler> playerHandlers = new List<PlayerHandler>();
   public List<GameWebObject> gameWebObjects = new List<GameWebObject>();
   int port = 11000;
   int nextGameId = 0;
@@ -50,6 +49,21 @@ public class Server
       this.listener.Close();
     }
     this.threads.ForEach(thread => thread.Abort());
+  }
+
+  public int AddPlayer(string ip)
+  {
+    var player = new PlayerHandler(this.nextPlayerId++, ip);
+    var openGame = this.gameWebObjects.Find(g => g.playerHandlers.Count < 2);
+    if (openGame != null)
+    {
+      openGame.playerHandlers.Add(player);
+      return openGame.playerHandlers.Count - 1;
+    }
+    var game = new GameWebObject(this.nextGameId++);
+    game.playerHandlers.Add(player);
+    gameWebObjects.Add(game);
+    return 0;
   }
 
   void PruneGameWebObjects()
@@ -82,34 +96,14 @@ public class Server
   {
     while (true)
     {
-      var playerHandler = new PlayerHandler(this.nextPlayerId++, listener.Accept());
-      new Thread(() => this.ListenForActions(playerHandler)).Start();
-    }
-  }
-
-  void ListenForActions(PlayerHandler playerHandler)
-  {
-    Console.WriteLine("Connection Received");
-    try
-    {
-      this.playerHandlers.Add(playerHandler);
-      if (gameWebObjects.Count == 0) gameWebObjects.Add(new GameWebObject(this.nextGameId++, playerHandler));
-      else gameWebObjects[0].playerHandlers.Add(playerHandler);
-      var gameWebObject = this.gameWebObjects.Find(
-        g => g.playerHandlers.IndexOf(playerHandler) > -1
-      );
-      while (playerHandler != null)
+      var socket = listener.Accept();
+      Console.WriteLine("Incoming Connection from " + socket.RemoteEndPoint.ToString());
+      var game = this.gameWebObjects.Find(g => g.PlayerConnect(socket));
+      if (game == null)
       {
-        byte[] bytes = new byte[GameAction.BYTE_ARRAY_SIZE];
-        playerHandler.handler.Receive(bytes);
-        gameWebObject.game.actions.Add(new GameAction(bytes, gameWebObject.game));
+        Console.WriteLine("Connection failed, player not in game");
+        socket.Close();
       }
-    }
-    catch (Exception e)
-    {
-      if (Server.DidPlayerDisconnect(playerHandler, e)) return;
-      Console.WriteLine(e);
-      playerHandler.handler.Close();
     }
   }
 }
@@ -117,14 +111,15 @@ public class Server
 public class PlayerHandler
 {
   public int id;
+  public string ip;
   public bool isNew = true;
   public Socket handler;
   public bool alive = true;
 
-  public PlayerHandler(int id, Socket handler)
+  public PlayerHandler(int id, string ip)
   {
     this.id = id;
-    this.handler = handler;
+    this.ip = ip;
   }
 
   public override string ToString()
@@ -142,13 +137,48 @@ public class GameWebObject
   public List<PlayerHandler> playerHandlers = new List<PlayerHandler>();
   public Thread thread;
 
-  public GameWebObject(int id, PlayerHandler playerHandler)
+  public GameWebObject(int id)
+  {
+    Console.WriteLine("Creating game");
+    this.id = id;
+  }
+
+  public bool PlayerConnect(Socket socket)
+  {
+    var player = this.playerHandlers.Find(p => p.ip == socket.RemoteEndPoint.ToString());
+    if (player == null) return false;
+    Console.WriteLine("Connection successful");
+    player.handler = socket;
+    new Thread(() => this.ListenForActions(player)).Start();
+    if (this.playerHandlers.Count == 2 && this.playerHandlers.TrueForAll(p => p.handler != null)) this.Start();
+    return true;
+  }
+
+  void Start()
   {
     Console.WriteLine("Starting game");
-    this.id = id;
-    this.playerHandlers.Add(playerHandler);
     this.thread = new Thread(this.PublishSteps);
     this.thread.Start();
+  }
+
+
+  void ListenForActions(PlayerHandler playerHandler)
+  {
+    try
+    {
+      while (true)
+      {
+        byte[] bytes = new byte[GameAction.BYTE_ARRAY_SIZE];
+        playerHandler.handler.Receive(bytes);
+        this.game.actions.Add(new GameAction(bytes, this.game));
+      }
+    }
+    catch (Exception e)
+    {
+      if (Server.DidPlayerDisconnect(playerHandler, e)) return;
+      Console.WriteLine(e);
+      playerHandler.handler.Close();
+    }
   }
 
   void PublishSteps()
