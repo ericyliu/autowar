@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public enum ServerOption
 {
@@ -19,6 +21,7 @@ public class Client : MonoBehaviour
   public Socket socket;
   public Game game;
   public Server server;
+  public HttpClient httpClient = new HttpClient();
 
   public void JoinServer(int id)
   {
@@ -46,7 +49,7 @@ public class Client : MonoBehaviour
 
   void OnApplicationQuit()
   {
-    if (this.socket != null)
+    if (this.socket != null && this.socket.Connected)
     {
       this.socket.Shutdown(SocketShutdown.Both);
       this.socket.Close();
@@ -65,8 +68,10 @@ public class Client : MonoBehaviour
   IEnumerator Connect()
   {
     yield return new WaitForSeconds(1);
-    byte[] bytes = new byte[1024];
     string hostString = this.serverOption == ServerOption.Hosted ? "34.74.40.215" : "localhost";
+    UnityWebRequest www = UnityWebRequest.Get(hostString + ":8080/join-game");
+    yield return www.SendWebRequest();
+    byte[] bytes = new byte[1024];
     IPHostEntry host = Dns.GetHostEntry(hostString);
     IPAddress ipAddress = host.AddressList[0];
     IPEndPoint remoteEp = new IPEndPoint(ipAddress, 11000);
@@ -102,6 +107,12 @@ public class Client : MonoBehaviour
     {
       byte[] bytes = new byte[GameStep.BYTE_ARRAY_SIZE];
       this.socket.Receive(bytes);
+      if (BitConverter.ToInt32(bytes, 0) == 0)
+      {
+        Debug.Log("Server connection lost");
+        this.socket.Close();
+        yield break;
+      }
       GameStep gameStep = new GameStep(bytes, this.game);
       gameComponent.steps.Add(gameStep);
       yield return new WaitForSeconds(.01f);

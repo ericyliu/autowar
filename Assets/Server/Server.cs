@@ -19,7 +19,7 @@ public class Server
   {
     if (e.GetType().Equals(new ObjectDisposedException("").GetType())) return true;
     if (e.GetType().Equals(new SocketException().GetType())) return true;
-    return !playerHandler.handler.Connected;
+    return !playerHandler.socket.Connected;
   }
 
   public static bool DidThreadAbort(Exception e)
@@ -31,7 +31,6 @@ public class Server
   public List<GameWebObject> gameWebObjects = new List<GameWebObject>();
   int port = 11000;
   int nextGameId = 0;
-  int nextPlayerId = 0;
   public List<Thread> threads = new List<Thread>();
 
   public void Start()
@@ -44,26 +43,17 @@ public class Server
 
   public void Stop()
   {
-    if (this.listener != null)
-    {
-      this.listener.Close();
-    }
+    if (this.listener != null) this.listener.Close();
     this.threads.ForEach(thread => thread.Abort());
   }
 
-  public int AddPlayer(string ip)
+  public void JoinGame(PlayerHandler playerHandler)
   {
-    var player = new PlayerHandler(this.nextPlayerId++, ip);
-    var openGame = this.gameWebObjects.Find(g => g.playerHandlers.Count < 2);
-    if (openGame != null)
-    {
-      openGame.playerHandlers.Add(player);
-      return openGame.playerHandlers.Count - 1;
-    }
-    var game = new GameWebObject(this.nextGameId++);
-    game.playerHandlers.Add(player);
+    GameWebObject game;
+    game = this.gameWebObjects.Find(g => g.playerHandlers.Count < 2);
+    if (game == null) game = new GameWebObject(this.nextGameId++);
+    game.playerHandlers.Add(playerHandler);
     gameWebObjects.Add(game);
-    return 0;
   }
 
   void PruneGameWebObjects()
@@ -98,146 +88,7 @@ public class Server
     {
       var socket = listener.Accept();
       Console.WriteLine("Incoming Connection from " + socket.RemoteEndPoint.ToString());
-      var game = this.gameWebObjects.Find(g => g.PlayerConnect(socket));
-      if (game == null)
-      {
-        Console.WriteLine("Connection failed, player not in game");
-        socket.Close();
-      }
+      new PlayerHandler(socket, this);
     }
-  }
-}
-
-public class PlayerHandler
-{
-  public int id;
-  public string ip;
-  public bool isNew = true;
-  public Socket handler;
-  public bool alive = true;
-
-  public PlayerHandler(int id, string ip)
-  {
-    this.id = id;
-    this.ip = ip;
-  }
-
-  public override string ToString()
-  {
-    var address = ((Server.localhost ? this.handler.LocalEndPoint : this.handler.RemoteEndPoint) as IPEndPoint).Address;
-    var port = ((Server.localhost ? this.handler.LocalEndPoint : this.handler.RemoteEndPoint) as IPEndPoint).Port;
-    return this.id + "(" + (this.alive ? "alive" : "dead") + "): " + address + ":" + port;
-  }
-}
-
-public class GameWebObject
-{
-  public int id;
-  public Game game = new Game();
-  public List<PlayerHandler> playerHandlers = new List<PlayerHandler>();
-  public Thread thread;
-
-  public GameWebObject(int id)
-  {
-    Console.WriteLine("Creating game");
-    this.id = id;
-  }
-
-  public bool PlayerConnect(Socket socket)
-  {
-    var player = this.playerHandlers.Find(p => p.ip == socket.RemoteEndPoint.ToString());
-    if (player == null) return false;
-    Console.WriteLine("Connection successful");
-    player.handler = socket;
-    new Thread(() => this.ListenForActions(player)).Start();
-    if (this.playerHandlers.Count == 2 && this.playerHandlers.TrueForAll(p => p.handler != null)) this.Start();
-    return true;
-  }
-
-  void Start()
-  {
-    Console.WriteLine("Starting game");
-    this.thread = new Thread(this.PublishSteps);
-    this.thread.Start();
-  }
-
-
-  void ListenForActions(PlayerHandler playerHandler)
-  {
-    try
-    {
-      while (true)
-      {
-        byte[] bytes = new byte[GameAction.BYTE_ARRAY_SIZE];
-        playerHandler.handler.Receive(bytes);
-        this.game.actions.Add(new GameAction(bytes, this.game));
-      }
-    }
-    catch (Exception e)
-    {
-      if (Server.DidPlayerDisconnect(playerHandler, e)) return;
-      Console.WriteLine(e);
-      playerHandler.handler.Close();
-    }
-  }
-
-  void PublishSteps()
-  {
-    try
-    {
-      while (true)
-      {
-        var alivePlayerHandlers = this.playerHandlers.FindAll(p => p.alive);
-        if (alivePlayerHandlers.Count == 0) break;
-        GameStep nextStep = this.game.Step();
-        alivePlayerHandlers.ForEach(playerHandler =>
-          PublishToPlayer(playerHandler, nextStep)
-        );
-        Thread.Sleep(Server.STEP_TIME);
-      }
-      Console.WriteLine("Closing game");
-    }
-    catch (Exception e)
-    {
-      Console.WriteLine(e);
-      Console.WriteLine("Closing game");
-      if (Server.DidThreadAbort(e)) return;
-    }
-  }
-
-  void PublishToPlayer(PlayerHandler playerHandler, GameStep nextStep)
-  {
-    try
-    {
-      if (playerHandler.isNew)
-      {
-        this.game.steps.ForEach(step =>
-          playerHandler.handler.Send(step.ToByteArray())
-        );
-        playerHandler.isNew = false;
-      }
-      else
-      {
-        playerHandler.handler.Send(nextStep.ToByteArray());
-      }
-    }
-    catch (Exception e)
-    {
-      playerHandler.alive = false;
-      Console.WriteLine("player disconnected: " + playerHandler.id);
-      if (Server.DidPlayerDisconnect(playerHandler, e)) return;
-      Console.WriteLine(e.GetType());
-      playerHandler.handler.Close();
-    }
-  }
-
-  public override string ToString()
-  {
-    var str = "\nGame " + this.id + "\n-----------------------------\n";
-    str += "Players\n";
-    this.playerHandlers.ForEach(p => str += " - " + p.ToString() + "\n");
-    str += "\nState\n";
-    str += " - " + this.game.ToString() + "\n";
-    return str;
   }
 }

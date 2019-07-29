@@ -13,7 +13,6 @@ public class HttpServer
   {
     this.server = server;
     this.routes.Add("/", this.GetServerState);
-    this.routes.Add("/join-game", this.JoinGame);
     this.routes.Add("/favicon.ico", (HttpListenerRequest request) => "Not found");
   }
 
@@ -30,6 +29,7 @@ public class HttpServer
       while (true)
       {
         HttpListenerContext context = listener.GetContext();
+        Console.WriteLine(context.Request.HttpMethod + " " + context.Request.RawUrl + " from " + context.Request.RemoteEndPoint.ToString());
         new Thread(() => this.HandleRequest(context)).Start();
       }
     }
@@ -69,10 +69,5 @@ public class HttpServer
     state += "AutoWar Status Panel\n\n";
     this.server.gameWebObjects.ForEach(gwo => state += gwo.ToString() + "\n");
     return state;
-  }
-
-  string JoinGame(HttpListenerRequest request)
-  {
-    return this.server.AddPlayer(request.RemoteEndPoint.ToString()).ToString();
   }
 }
